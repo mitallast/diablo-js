@@ -34,6 +34,8 @@ var floorMap = [
 var floor = document.getElementById("floor").getContext("2d");
 floor.w = floor.canvas.width;
 floor.h = floor.canvas.height;
+floor.click_x=0;
+floor.click_y=0;
 
 var tileMap = {
 	0: getImage("texture/tileable-grey.png"),
@@ -48,8 +50,8 @@ var hero = new person("king_artur");
 var monsters = [];
 for(var i=0;i<33;i++){
 	var p = new person("safria_elf");
-	p.to_x = p.x = Math.ceil(Math.random()*(floorMap[0].length/4)*s);
-	p.to_y = p.y = Math.ceil(Math.random()*(floorMap.length/4)*s);
+	p.to_x = p.x = randomx();
+	p.to_y = p.y = randomy();
 	monsters.push(p);
 }
 
@@ -59,12 +61,67 @@ setInterval(function() {
 	m.to_y = m.y+(Math.random()*s*2-s);
 }, 200);
 
+var barrels=[];
+for(var i=0;i<33;i++){
+	var b = new barrel();
+	b.x = randomx();
+	b.y = randomy();
+	barrels.push(b);
+}
+var coins=[];
+var barrelSprite = getImage("sprite/barrel64.png");
+var coinSprite = getImage("sprite/coins10.png");
+function barrel(){
+	this.x=0;
+	this.y=0;
+	this.sprite=function(){
+		return barrelSprite;
+	};
+	this.click=function(){
+		remove(barrels,this);
+		var c = new coin();
+		c.x = this.x;
+		c.y = this.y;
+		coins.push(c);
+	};
+}
+function coin(){
+	this.x=0;
+	this.y=0;
+	this.coins=Math.floor(Math.random()*100);
+	this.sprite=function(){
+		return coinSprite;
+	};
+	this.click=function(){
+		remove(coins,this);
+		hero.coins+=this.coins;
+		log.push("Found "+this.coins+" coins, now "+hero.coins);
+	};
+}
+function processClick(){
+	var zb=[];
+	for(var m in monsters)zb.push(monsters[m]);
+	for(var b in barrels)zb.push(barrels[b]);
+	for(var c in coins)zb.push(coins[c]);
+	zb.sort(function(a,b){ return b.x+b.y-a.x-a.y; });// first is asc
+	for(var i in zb){
+		var obj = zb[i]; 
+		var spr = obj.sprite();
+		if( floor.click_x >= obj.x-spr.width/2 && floor.click_x <= obj.x+spr.width/2
+			&& floor.click_y >= obj.y-spr.height && floor.click_y <= obj.y){
+			obj.click();
+		}
+	}
+}
+
 function renderObjects(){
 	floor.save();
 	var zb=[];// z-buffer
 	zb.push(hero);
 	for(var m in monsters)zb.push(monsters[m]);
-	zb.sort(function(b,a){ return b.x+b.y-a.x-a.y; });
+	for(var b in barrels)zb.push(barrels[b]);
+	for(var c in coins)zb.push(coins[c]);
+	zb.sort(function(b,a){ return b.x+b.y-a.x-a.y; });//first is desc
 	for(z in zb){
 		var m = zb[z];
 		var mrx = m.x * Math.cos(a) - m.y * Math.sin(a),
@@ -118,6 +175,10 @@ function renderFloor() {
 	floor.restore();
 }
 
+function remove(ar,v){var i=ar.indexOf(v);if(i>=0)ar.splice(i,1);}
+function randomx(){return Math.floor(Math.random()*(floorMap[0].length-1)*s);}
+function randomy(){return Math.floor(Math.random()*(floorMap.length-1)*s);}
+
 function typeByPoint(x,y){
 	var dx=Math.floor(x/s), 
 		dy=Math.floor(y/s);
@@ -139,12 +200,13 @@ floor.canvas.onclick = function(e) {
 		my = e.offsetY - floor.h/2;
 	my *= 2; //unscale
 	// unrotate
-	var a = - Math.PI / 4,
-		mrx = mx * Math.cos(a) - my * Math.sin(a),
-		mry = mx * Math.sin(a) + my * Math.cos(a);
+	var a = - Math.PI / 4;
+	floor.click_x = hero.x + mx * Math.cos(a) - my * Math.sin(a);
+	floor.click_y = hero.y + mx * Math.sin(a) + my * Math.cos(a);
+	processClick();
 	// translate
-	hero.to_x = hero.x + mrx;
-	hero.to_y = hero.y + mry;
+	hero.to_x = floor.click_x;
+	hero.to_y = floor.click_y;
 	return false;
 };
 
@@ -166,6 +228,7 @@ function person(name){
 	this.a = 4; // from 0 to 7, where 0 is at 12 o´clock
 	this.walk = false;
 	this.step = 0;
+	this.coins=0;
 	// init textures;
 	for(var i=1;i<=8;i++){
 		this.stand.push(getImage("char/"+name+"/stand/"+i+".gif"));
@@ -203,6 +266,7 @@ function person(name){
 			this.anim[this.a][this.step]
 			:this.stand[this.a];
 	};
+	this.click = function(){alert("Hello, hero!")};
 }
 
 })();
