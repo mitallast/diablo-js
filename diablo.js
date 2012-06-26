@@ -6,7 +6,7 @@ var tw=512, th=tw/2, s=tw*0.705, a=Math.PI/4, log=[];
 var floorMap = [
 	"00000000000000 000000000000000000000000000000000".split(""),
 	"01111000000000 000000000000000000000000000000000".split(""),
-	"00221000000000 000000000000000000000000000000000".split(""),
+	"00021000000000 000000000000000000000000000000000".split(""),
 	"000111111111111111110000000000000000000000000000".split(""),
 	"00000000100000 001000000000000000000000000000000".split(""),
 	"00000000100000 001111111100000000000000000000000".split(""),
@@ -62,7 +62,7 @@ var hero = new Person("king_artur",s*1.5,s*1.5);
 var monsters = [];
 for(var i=0;i<33;i++) monsters.push(new Person("safria_elf",randomx(),randomy()));
 
-setInterval(function() {
+setInterval(function() { // random step for mobs
 	var m = monsters[Math.ceil(Math.random()*(monsters.length-1))];
 	m.to_x = m.x+(Math.random()*s*2-s);
 	m.to_y = m.y+(Math.random()*s*2-s);
@@ -173,16 +173,21 @@ function renderObjects(){
 
 function renderFloor() {
 	floor.save();
-	floor.clearRect(0,0, floor.w,floor.h);
 	floor.translate(floor.w/2-th, floor.h/2);// translate to center
+	var fdx=Math.floor(hero.x/s), // hero tile
+		fdy=Math.floor(hero.y/s),
+		miny = Math.max(0, fdy-2), // calculate camera visible tiles
+		maxy = Math.min(floorMap.length-1,fdy+2),
+		minx = Math.max(0, fdx-2),
+		maxx = Math.min(floorMap[0].length-1,fdx+2);
 	// translate to hero
 	var mrx = hero.x * Math.cos(a) - hero.y * Math.sin(a),
 		mry = hero.x * Math.sin(a) + hero.y * Math.cos(a);
 	mry = mry/2; // scale to isometric
 	floor.translate(-mrx, -mry);
 	// render
-	for(var y in floorMap){
-		for(var x in floorMap[y]){
+	for(var y=miny;y<=maxy;y++){
+		for(var x=minx;x<=maxx;x++){
 			x=parseInt(x), y=parseInt(y);
 			var f = floorMap[y][x];
 			if(f==" ")continue;
@@ -198,8 +203,8 @@ function renderFloor() {
 }
 
 function remove(ar,v){var i=ar.indexOf(v);if(i>=0)ar.splice(i,1);}
-function randomx(){return Math.floor(Math.random()*(floorMap[0].length/4)*s);}
-function randomy(){return Math.floor(Math.random()*(floorMap.length/4)*s);}
+function randomx(){return Math.floor(Math.random()*(floorMap[0].length/3)*s);}
+function randomy(){return Math.floor(Math.random()*(floorMap.length/3)*s);}
 
 function typeByPoint(x,y){
 	var dx=Math.floor(x/s), 
@@ -216,27 +221,24 @@ function renderLog(){
 }
 
 floor.canvas.onclick = function(e) { 
-	// untranslate
 	var mx = e.offsetX - floor.w/2;
 	var my = e.offsetY - floor.h/2;
 		my *= 2; //unscale
-	// unrotate
 	floor.click_x = hero.x + mx * Math.cos(-a) - my * Math.sin(-a);
 	floor.click_y = hero.y + mx * Math.sin(-a) + my * Math.cos(-a);
-	
 	processClick();
-	
 	hero.to_x = floor.click_x;
 	hero.to_y = floor.click_y;
 };
 
+var frames=0;
 setInterval(function() {
+	floor.clearRect(0,0, floor.w,floor.h);
 	hero.nextStep();
 	for(var i in monsters)monsters[i].nextStep();
 	renderFloor();
 	renderLog();
 }, 33);
-
 
 function Person(name,x,y){
 	this.name=name;
