@@ -3,6 +3,7 @@
 function getImage(url){ var i = new Image(); i.src = url; return i};
 
 var tw=512, th=tw/2, s=tw*0.705, a=Math.PI/4, log=[];
+var asin = acos = Math.sin(a);
 var floorMap = [
 	"00000000000000 000000000000000000000000000000000".split(""),
 	"01111000000000 000000000000000000000000000000000".split(""),
@@ -41,6 +42,10 @@ var tileMap = {
 	2: getImage("texture/tileable-grey.png"),
 };
 
+var barrelSprite = getImage("sprite/barrel64.png");
+var coinSprite = getImage("sprite/coins10.png");
+var houseSprite = getImage("sprite/house.png");
+
 // pre-fetch textures for Person class
 var personTextures={};
 var personTypes=["king_artur","safria_elf"];
@@ -63,9 +68,9 @@ var monsters = [];
 for(var i=0;i<33;i++) monsters.push(new Person("safria_elf",randomx(),randomy()));
 
 setInterval(function() { // random step for mobs
-	var m = monsters[Math.ceil(Math.random()*(monsters.length-1))];
-	m.to_x = m.x+(Math.random()*s*2-s);
-	m.to_y = m.y+(Math.random()*s*2-s);
+var m = monsters[Math.ceil(Math.random()*(monsters.length-1))];
+m.to_x = m.x+(Math.random()*s-s/2);
+m.to_y = m.y+(Math.random()*s-s/2);
 }, 200);
 
 var barrels=[];
@@ -76,30 +81,22 @@ var houses=[];
 for(var y in floorMap){ // pre fetch house sprites;
 	for(var x in floorMap[y]){
 		if(floorMap[y][x]=="2"){
-			var h = new House();
-			h.x = (parseInt(x)+0.5)*s;  // at center of texture
-			h.y = (parseInt(y)+0.5)*s;
+			var h = new House(
+				(parseInt(x)+0.5)*s,
+				(parseInt(y)+0.5)*s);
 			houses.push(h);
 		}
 	}
 }
 
-var barrelSprite = getImage("sprite/barrel64.png");
-var coinSprite = getImage("sprite/coins10.png");
-var houseSprite = getImage("sprite/house.png");
-
-function House(){
-	this.x=0;
-	this.y=0;
-	this.offset_y=th/2; // render offset
-	this.sprite=function(){
-		return houseSprite;
-	};
+function House(x,y){
+	Shape.call(this,houseSprite,x,y);
+	this.offset_y=th/2;
 	this.isOverHero = function(){
-		var hx = (hero.x - hero.y) * Math.cos(a),
-			hy = (hero.x + hero.y)/2 * Math.sin(a);
-		var sx = (this.x - this.y) * Math.cos(a),
-			sy = (this.x + this.y)/2 * Math.sin(a);
+		var hx = (hero.x - hero.y) * acos,
+			hy = (hero.x + hero.y)/2 * asin;
+		var sx = (this.x - this.y) * acos,
+			sy = (this.x + this.y)/2 * asin;
 		return (hx >= sx-houseSprite.width/2)
 			&& (hx <= sx+houseSprite.width/2)
 			&& (hy >= sy+this.offset_y-houseSprite.height)
@@ -107,11 +104,7 @@ function House(){
 	}
 }
 function Barrel(x, y){
-	this.x=x;
-	this.y=y;
-	this.sprite=function(){
-		return barrelSprite;
-	};
+	Shape.call(this,barrelSprite,x,y);
 	this.click=function(){
 		remove(barrels,this);
 		var c = new Coin(this.x, this.y);
@@ -119,12 +112,8 @@ function Barrel(x, y){
 	};
 }
 function Coin(x,y){
-	this.x=x;
-	this.y=y;
+	Shape.call(this,coinSprite,x,y);
 	this.coins=Math.floor(Math.random()*100);
-	this.sprite=function(){
-		return coinSprite;
-	};
 	this.click=function(){
 		remove(coins,this);
 		hero.coins+=this.coins;
@@ -139,7 +128,7 @@ function processClick(){
 	zb.sort(function(a,b){ return b.x+b.y-a.x-a.y; });// first is asc
 	for(var i in zb){
 		var obj = zb[i]; 
-		var spr = obj.sprite();
+		var spr = obj.sprite;
 		if( floor.click_x >= obj.x-spr.width/2 && floor.click_x <= obj.x+spr.width/2
 			&& floor.click_y >= obj.y-spr.height && floor.click_y <= obj.y){
 			obj.click();
@@ -158,15 +147,25 @@ function renderObjects(){
 	zb.sort(function(b,a){ return b.x+b.y-a.x-a.y; });//first is desc
 	for(z in zb){
 		var m = zb[z];
-		var sx = (m.x - m.y)*Math.cos(a),
-			sy = (m.x + m.y)/2*Math.sin(a); // simplified rotate
-		if(m.offset_y) sy+=m.offset_y;
-		var tile = m.sprite();
+		var sx = (m.x - m.y)*acos+m.offset_x,
+			sy = (m.x + m.y)/2*asin+m.offset_y;
+		var tile = m.sprite;
 		if(m.isOverHero && m.isOverHero()){
 			floor.globalAlpha = 0.5;
 		} 
 		floor.drawImage(tile, Math.round(sx-tile.width/2), Math.round(sy-tile.height));
 		floor.globalAlpha = 1;
+		if(m.life && m.origin_life && m!= hero){
+			floor.save()
+			sy-=m.sprite.height+20;
+			var lm = Math.floor(m.origin_life/20),
+				lr = Math.floor(m.life/20)
+			floor.fillStyle = "black"
+			floor.fillRect(sx-lm/2-1, sy, lm+2, 6);
+			floor.fillStyle = "red"
+			floor.fillRect(sx-lm/2, sy+1, lr, 4);
+			floor.restore()
+		}
 	}
 	floor.restore();
 }
@@ -174,6 +173,7 @@ function renderObjects(){
 function renderFloor() {
 	floor.save();
 	floor.translate(floor.w/2-th, floor.h/2);// translate to center
+	
 	var fdx=Math.floor(hero.x/s), // hero tile
 		fdy=Math.floor(hero.y/s),
 		miny = Math.max(0, fdy-2), // calculate camera visible tiles
@@ -181,9 +181,9 @@ function renderFloor() {
 		minx = Math.max(0, fdx-2),
 		maxx = Math.min(floorMap[0].length-1,fdx+2);
 	// translate to hero
-	var mrx = hero.x * Math.cos(a) - hero.y * Math.sin(a),
-		mry = hero.x * Math.sin(a) + hero.y * Math.cos(a);
-	mry = mry/2; // scale to isometric
+	var mrx = hero.x * acos - hero.y * asin,
+		mry = hero.x * asin + hero.y * acos;
+		mry = mry/2;
 	floor.translate(-mrx, -mry);
 	// render
 	for(var y=miny;y<=maxy;y++){
@@ -192,7 +192,7 @@ function renderFloor() {
 			var f = floorMap[y][x];
 			if(f==" ")continue;
 			var tile = tileMap[f];
-			var tx = ( x - y ) * th, // for normal sprite
+			var tx = ( x - y ) * th,
 				ty = ( x + y ) * th/2;
 			floor.drawImage(tile, tx, ty, tw, th);
 		}
@@ -231,12 +231,13 @@ floor.canvas.onclick = function(e) {
 	hero.to_y = floor.click_y;
 };
 
-var frames=0;
+log[0]=0;
 setInterval(function() {
 	floor.clearRect(0,0, floor.w,floor.h);
 	hero.nextStep();
 	for(var i in monsters)monsters[i].nextStep();
 	renderFloor();
+	log[0]++;
 	renderLog();
 }, 33);
 
@@ -244,16 +245,20 @@ function Person(name,x,y){
 	this.name=name;
 	this.stand=personTextures[this.name].stand;
 	this.anim=personTextures[this.name].anim;
-	this.x=x;
-	this.y=y;
+	this.a = 4; // angel, from 0 to 7, where 0 is at 12 o´clock
+	this.step = 0;
+	Shape.call(this,this.stand[this.a],x,y);
 	this.to_x = this.x;
 	this.to_y = this.y;
-	this.a = 4; // angel, from 0 to 7, where 0 is at 12 o´clock
-	this.walk = false;
-	this.step = 0;
 	this.coins=0;
+	// life
+	this.origin_life = 1000
+	this.life=600;
+	// characteristic
+	this.damage = 100
+	this.resistance = 10 // damage resistance, less than 1000
 	this.nextStep = function(){
-		this.walk=false;
+		this.sprite = this.stand[this.a];
 		var sx = dx = (this.to_x - this.x),
 		sy = dy = (this.to_y - this.y),
 		st = 6, x=this.x, y=this.y;
@@ -272,15 +277,25 @@ function Person(name,x,y){
 		this.x=x;
 		this.y=y;
 		this.a = Math.round((Math.atan2(sy, sx)/Math.PI+2.75)%2*4)%8;
-		this.step = (this.step+1)%15; 
-		this.walk=true;
+		this.step = (this.step+1)%15;
+		this.sprite=this.anim[this.a][this.step];
 	};
-	this.sprite = function(){
-		return this.walk?
-			this.anim[this.a][this.step]
-			:this.stand[this.a];
-	};
-	this.click = function(){alert("Hello, hero!")};
+	this.click = function(){
+		var health = this.life - hero.damage * 1000/(1000-this.resistance);
+		if(health<=0){
+			this.life = 0;
+			remove(monsters,this);
+			log.push(this.name+" is die");
+		}else{
+			this.life = health;
+		}
+	}
 }
-
+function Shape(sprite,x,y){
+	this.x = x;
+	this.y = y;
+	this.offset_x = 0;
+	this.offset_y = 0;
+	this.sprite = sprite;
+}
 })();
