@@ -51,26 +51,35 @@ var personTextures={};
 var personTypes=["king_artur","safria_elf"];
 for(var pt in personTypes){
 	var name = personTypes[pt];
-	var p = {stand:[],anim:{}};
+	var p = {stay:{},run:{}};
 	for(var i=1;i<=8;i++){
-		p.stand.push(getImage("char/"+name+"/stand/"+i+".gif"));
-		p.anim[i-1]=[];
+		p.stay[i-1]=[getImage("char/"+name+"/stand/"+i+".gif")];
+		p.run[i-1]=[];
 		for(var j=1;j<=15;j++){
 			var j_s = j<10?"0"+j:j;
-			p.anim[i-1].push(getImage("char/"+name+"/anim/"+i+"_"+j_s+".gif"));
+			p.run[i-1].push(getImage("char/"+name+"/anim/"+i+"_"+j_s+".gif"));
 		}
 	}
 	personTextures[name] = p;
 }
+var bt=personTextures["barbarian"]={stay:{},run:{},push:{}};
+for(var ba=0;ba<=15;ba++){
+	bt.stay[ba]=[];
+	bt.run[ba]=[];
+	bt.push[ba]=[];
+	for(var t=0;t<=7;t++)  bt.stay[ba].push(getImage("char/barbarian/stay/"+ba+"-"+t+".png"));
+	for(var t=0;t<=7;t++)  bt.run[ba].push(getImage("char/barbarian/run/"+ba+"-"+t+".png"));
+	for(var t=0;t<=17;t++) bt.push[ba].push(getImage("char/barbarian/push/"+ba+"-"+t+".png"));
+}
 
-var hero = new Person("king_artur",s*1.5,s*1.5);
+
+var hero = new Person("barbarian",s*1.5,s*1.5);
 var monsters = [];
 for(var i=0;i<33;i++) monsters.push(new Person("safria_elf",randomx(),randomy()));
-
 setInterval(function() { // random step for mobs
-var m = monsters[Math.ceil(Math.random()*(monsters.length-1))];
-m.to_x = m.x+(Math.random()*s-s/2);
-m.to_y = m.y+(Math.random()*s-s/2);
+	var m = monsters[Math.ceil(Math.random()*(monsters.length-1))];
+	m.to_x = m.x+(Math.random()*s-s/2);
+	m.to_y = m.y+(Math.random()*s-s/2);
 }, 200);
 
 var barrels=[];
@@ -106,9 +115,11 @@ function House(x,y){
 function Barrel(x, y){
 	Shape.call(this,barrelSprite,x,y);
 	this.click=function(){
-		remove(barrels,this);
-		var c = new Coin(this.x, this.y);
-		coins.push(c);
+		var self = this;
+		hero.doPush(function(){
+			remove(barrels,self);
+			coins.push(new Coin(self.x, self.y));
+		});
 	};
 }
 function Coin(x,y){
@@ -152,7 +163,7 @@ function renderObjects(){
 		var tile = m.sprite;
 		if(m.isOverHero && m.isOverHero()){
 			floor.globalAlpha = 0.5;
-		} 
+		}
 		floor.drawImage(tile, Math.round(sx-tile.width/2), Math.round(sy-tile.height));
 		floor.globalAlpha = 1;
 		if(m.life && m.origin_life && m!= hero){
@@ -223,10 +234,11 @@ function renderLog(){
 floor.canvas.onclick = function(e) { 
 	var mx = e.offsetX - floor.w/2;
 	var my = e.offsetY - floor.h/2;
-		my *= 2; //unscale
+	var isCanClick = Math.abs(mx) < 100 && Math.abs(my) < 100;
+	my *= 2; //unscale
 	floor.click_x = hero.x + mx * Math.cos(-a) - my * Math.sin(-a);
 	floor.click_y = hero.y + mx * Math.sin(-a) + my * Math.cos(-a);
-	processClick();
+	if(isCanClick)processClick();
 	hero.to_x = floor.click_x;
 	hero.to_y = floor.click_y;
 };
@@ -239,15 +251,20 @@ setInterval(function() {
 	renderFloor();
 	log[0]++;
 	renderLog();
-}, 33);
-
+}, 66);
 function Person(name,x,y){
 	this.name=name;
-	this.stand=personTextures[this.name].stand;
-	this.anim=personTextures[this.name].anim;
-	this.a = 4; // angel, from 0 to 7, where 0 is at 12 o´clock
+	// for render;
+	this.stay=personTextures[this.name].stay;
+	this.run=personTextures[this.name].run;
+	this.push=personTextures[this.name].push;
+	this.currentState=this.stay;
+	
+	this.a = (this.name=="barbarian")?0:4;
 	this.step = 0;
-	Shape.call(this,this.stand[this.a],x,y);
+	this.pushCallback=null;
+
+	Shape.call(this,this.stay[this.a][0],x,y);
 	this.to_x = this.x;
 	this.to_y = this.y;
 	this.coins=0;
@@ -258,37 +275,69 @@ function Person(name,x,y){
 	this.damage = 100
 	this.resistance = 10 // damage resistance, less than 1000
 	this.nextStep = function(){
-		this.sprite = this.stand[this.a];
-		var sx = dx = (this.to_x - this.x),
-		sy = dy = (this.to_y - this.y),
-		st = 6, x=this.x, y=this.y;
-		// if more than one step
-		if(Math.abs(dx) > st || Math.abs(dy) > st){
-			var sx = st * dx / Math.sqrt((dx*dx) + (dy*dy)),
-				sy = sx * dy / dx;
-		}
-		if(Math.abs(sx)<1 && Math.abs(sy) <1) return; // if no step
-		x += sx; 
-		y += sy;
-		var t = typeByPoint(x,y);
-		if(typeof t == 'undefined') return; // if on not map
-		if(t == " ") return; // if empty slot
-		if(t == "2") return; // if House
-		this.x=x;
-		this.y=y;
-		this.a = Math.round((Math.atan2(sy, sx)/Math.PI+2.75)%2*4)%8;
-		this.step = (this.step+1)%15;
-		this.sprite=this.anim[this.a][this.step];
-	};
-	this.click = function(){
-		var health = this.life - hero.damage * 1000/(1000-this.resistance);
-		if(health<=0){
-			this.life = 0;
-			remove(monsters,this);
-			log.push(this.name+" is die");
+		if(this.currentState == this.push){
+			if(this.step==(this.push[0].length-1)){
+				this.currentState = this.stay;
+				this.step=-1;
+				if(this.pushCallback){
+					this.pushCallback();
+					this.pushCallback=null;
+				}
+			}
 		}else{
-			this.life = health;
+			var sx = dx = (this.to_x - this.x),
+			sy = dy = (this.to_y - this.y),
+			st = this.name =="barbarian"?17:6, x=this.x, y=this.y;
+			// if more than one step
+			if(Math.abs(dx) > st || Math.abs(dy) > st){
+				var sx = st * dx / Math.sqrt((dx*dx) + (dy*dy)),
+					sy = sx * dy / dx;
+			}
+			if(Math.abs(sx)>1 || Math.abs(sy) >1){
+				x += sx; 
+				y += sy;
+				var t = typeByPoint(x,y);
+				if(t=="0"||t=="1"||t=="2"||t=="3"){
+					this.x=x;
+					this.y=y;
+					if(this.currentState != this.run){
+						this.currentState = this.run;
+						this.step = -1;
+					}
+					if(this.name=="barbarian"){
+						this.a = Math.round((Math.atan2(sy, sx)/Math.PI+2.75)%2*9+7)%16;
+					}else{
+						this.a = Math.round((Math.atan2(sy, sx)/Math.PI+2.75)%2*4)%8;
+					}	
+				}
+			}
+			else{
+				if(this.currentState != this.stay){
+					this.currentState = this.stay;
+					this.step = -1;
+				}
+			}
 		}
+		this.step = (this.step+1)%(this.currentState[this.a].length);
+		this.sprite = this.currentState[this.a][this.step];
+	};
+	this.doPush = function(callback){
+		this.currentState = this.push;
+		this.step=-1;
+		this.pushCallback=callback;
+	}
+	this.click = function(){
+		var self = this;
+		hero.doPush(function(){
+			var health = self.life - hero.damage * 1000/(1000-self.resistance);
+			if(health<=0){
+				self.life = 0;
+				remove(monsters,self);
+				log.push(self.name+" is die");
+			}else{
+				self.life = health;
+			}
+		});		
 	}
 }
 function Shape(sprite,x,y){
