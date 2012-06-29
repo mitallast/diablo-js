@@ -1,6 +1,13 @@
 (function() {
 
-function getImage(url){ var i = new Image(); i.src = url; return i};
+var imageCount=0;
+function getImage(url){
+	var i = new Image();
+	i.onload = function(){ imageCount--; }
+	i.src = url;
+	imageCount++;
+	return i;
+};
 
 var tw=512, th=tw/2, s=tw*0.705, a=Math.PI/4, log=[];
 var asin = acos = Math.sin(a);
@@ -60,22 +67,23 @@ for(var pt in personTypes){
 			p.run[i-1].push(getImage("char/"+name+"/anim/"+i+"_"+j_s+".gif"));
 		}
 	}
-	personTextures[name] = p;
+	personTextures[name] = p;2
 }
 var bt=personTextures["barbarian"]={stay:{},run:{},push:{}};
 for(var ba=0;ba<=15;ba++){
 	bt.stay[ba]=[];
 	bt.run[ba]=[];
 	bt.push[ba]=[];
-	for(var t=0;t<=7;t++)  bt.stay[ba].push(getImage("char/barbarian/stay/"+ba+"-"+t+".png"));
+	for(var t=0;t<=0;t++)  bt.stay[ba].push(getImage("char/barbarian/stay/"+ba+"-"+t+".png"));
 	for(var t=0;t<=7;t++)  bt.run[ba].push(getImage("char/barbarian/run/"+ba+"-"+t+".png"));
-	for(var t=0;t<=17;t++) bt.push[ba].push(getImage("char/barbarian/push/"+ba+"-"+t+".png"));
-}
-
+	for(var t=0;t<=8;t++) bt.push[ba].push(getImage("char/barbarian/push/"+ba+"-"+t*2+".png"));
+};
 
 var hero = new Person("barbarian",s*1.5,s*1.5);
 var monsters = [];
-for(var i=0;i<33;i++) monsters.push(new Person("safria_elf",randomx(),randomy()));
+for(var i=0;i<33;i++) 
+	monsters.push(new Person("safria_elf",randomx(),randomy()));
+
 setInterval(function() { // random step for mobs
 	var m = monsters[Math.ceil(Math.random()*(monsters.length-1))];
 	m.to_x = m.x+(Math.random()*s-s/2);
@@ -143,8 +151,10 @@ function processClick(){
 		if( floor.click_x >= obj.x-spr.width/2 && floor.click_x <= obj.x+spr.width/2
 			&& floor.click_y >= obj.y-spr.height && floor.click_y <= obj.y){
 			obj.click();
+			return true;
 		}
 	}
+	return false;
 }
 
 function renderObjects(){
@@ -165,9 +175,10 @@ function renderObjects(){
 			floor.globalAlpha = 0.5;
 		}
 		floor.drawImage(tile, Math.round(sx-tile.width/2), Math.round(sy-tile.height));
-		floor.globalAlpha = 1;
+		
 		if(m.life && m.origin_life && m!= hero){
 			floor.save()
+			floor.globalAlpha = 0.7
 			sy-=m.sprite.height+20;
 			var lm = Math.floor(m.origin_life/20),
 				lr = Math.floor(m.life/20)
@@ -177,6 +188,7 @@ function renderObjects(){
 			floor.fillRect(sx-lm/2, sy+1, lr, 4);
 			floor.restore()
 		}
+		floor.globalAlpha = 1;
 	}
 	floor.restore();
 }
@@ -238,13 +250,14 @@ floor.canvas.onclick = function(e) {
 	my *= 2; //unscale
 	floor.click_x = hero.x + mx * Math.cos(-a) - my * Math.sin(-a);
 	floor.click_y = hero.y + mx * Math.sin(-a) + my * Math.cos(-a);
-	if(isCanClick)processClick();
+	if(isCanClick)if(processClick())return;
 	hero.to_x = floor.click_x;
 	hero.to_y = floor.click_y;
 };
 
 log[0]=0;
 setInterval(function() {
+	if(imageCount) return;
 	floor.clearRect(0,0, floor.w,floor.h);
 	hero.nextStep();
 	for(var i in monsters)monsters[i].nextStep();
@@ -252,6 +265,7 @@ setInterval(function() {
 	log[0]++;
 	renderLog();
 }, 66);
+
 function Person(name,x,y){
 	this.name=name;
 	// for render;
@@ -320,6 +334,8 @@ function Person(name,x,y){
 		}
 		this.step = (this.step+1)%(this.currentState[this.a].length);
 		this.sprite = this.currentState[this.a][this.step];
+		this.offset_y = this.name=="barbarian" 
+			&& this.currentState==this.push?30:0
 	};
 	this.doPush = function(callback){
 		this.currentState = this.push;
