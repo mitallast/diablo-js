@@ -94,27 +94,29 @@ for(var pt in personTypes){
     personTextures[name]=p;
 }//*/
 
-var bt=personTextures["barbarian"]={stay:[],run:[],push:[]};
+var bt=personTextures["barbarian"]={stay:[],run:[],attack:[]};
 for(var ba=0;ba<=15;ba++){
     bt.stay[ba]=[];
     bt.run[ba]=[];
-    bt.push[ba]=[];
+    bt.attack[ba]=[];
     for(var t=0;t<=0;t++) bt.stay[ba].push("char/barbarian/stay/"+ba+"-"+t+".png");
     for(var t=0;t<=7;t++) bt.run[ba].push("char/barbarian/run/"+ba+"-"+t+".png");
-    for(var t=0;t<=8;t++) bt.push[ba].push("char/barbarian/push/"+ba+"-"+t*2+".png");
+    for(var t=0;t<=8;t++) bt.attack[ba].push("char/barbarian/push/"+ba+"-"+t*2+".png");
 }//*/
 
-var hero=new Barbarian(s*1.5,s*1.5);
+var hero=new BarbarianOptimized(s*1.5,s*1.5);
 hero.health=hero.origin_health=1000;
 var monsters=[];
 
 // peacefull mobs
+/*
 for(var i=0;i<10;i++) {
     monsters.push(new PeacefullMob(Math.random()>0.5?"king_artur":"safria_elf",randomx(),randomy()));
-}//*/
+}
+*///*/
 // aggresive mobs
 for(var i=0;i<10;i++) {
-    monsters.push(new Barbarian(randomx(),randomy()));
+    monsters.push(new BarbarianOptimized(randomx(),randomy()));
 }//*/
 
 
@@ -127,7 +129,7 @@ setInterval(function() { // random step for mobs, attack hero
         if(m.attack){
             if(Math.abs(hero.x-m.x)<attackDist &&
                Math.abs(hero.y-m.y)<attackDist){
-               m.attack(hero);
+               m.doAttack(hero);
             }else{
                 m.to_x=hero.x
                 m.to_y=hero.y
@@ -254,13 +256,26 @@ function renderObjects(){
         floor.shadowBlur = 10
         floor.shadowOffsetX = -10
         floor.shadowOffsetY = -10
-        floor.drawImage(tile, Math.round(sx-tile.width/2), Math.round(sy-tile.height));
+        if(tile.angles && tile.steps){
+            var tw = tile.width / tile.steps;
+            var th = tile.height / tile.angles;        
+            floor.drawImage(tile, 
+                tw*m.step, th*m.angle, tw, th,
+                Math.round(sx-tw/2), Math.round(sy-th), tw, th);
+        }else{
+            floor.drawImage(tile, Math.round(sx-tile.width/2), Math.round(sy-tile.height));            
+        }
         floor.restore()
         // health line
         if(m.health && m.origin_health && m!= hero){
             floor.save()
             floor.globalAlpha=0.7
-            sy-=m.sprite.height+20;
+            if(m.sprite.angles){
+                sy-=tile.height/tile.angles;
+            }else{
+                sy-=m.sprite.height;
+            }
+            sy+=20;
             var lm=Math.floor(m.origin_health/20),
                 lr=Math.floor(m.health/20)
             floor.fillStyle="black"
@@ -354,7 +369,7 @@ function House(x,y){
 function Barrel(x, y){
     Shape.call(this,barrelSprite,x,y);
     this.use=function(mob){
-        if(mob.attack) mob.attack(this);
+        if(mob.doAttack) mob.doAttack(this);
     };
     this.damage=function(damage){
         remove(barrels,this);
@@ -376,7 +391,7 @@ function Person(name,x,y){
     this.name=name;
     this.stay=personTextures[this.name].stay;
     this.run=personTextures[this.name].run;
-    this.push=personTextures[this.name].push;
+    this.attack=personTextures[this.name].attack;
     this.currentState=this.stay;
     this.step=0;
     Shape.call(this,this.stay[this.a][0],x,y);
@@ -385,7 +400,7 @@ function Person(name,x,y){
     this.nextStep=function(){
         var sx=dx=(this.to_x - this.x),
             sy=dy=(this.to_y - this.y),
-            st=this.name =="barbarian"?16:6, 
+            st=6, 
             x=this.x, y=this.y;
         
         if(Math.abs(dx)>st || Math.abs(dy)>st){ 
@@ -435,14 +450,11 @@ function BasicMob(name,x,y){
     this.health=this.origin_health
     this.resistance=10 // damage resistance, less than 1000
     this.use = function(mob){
-        if(mob.attack) mob.attack(this);
+        if(mob.doAttack) mob.doAttack(this);
     };
     this.damage=function(damage){
         var health=this.health - damage * 1000/(1000-this.resistance);
         if(health<=0){
-            if(this == hero){
-                //alert("you die");
-            }
             this.health=0;
             remove(monsters,this);
             if(Math.random()>0.5) coins.push(new Coin(this.x, this.y));
@@ -458,37 +470,104 @@ function PeacefullMob(name,x,y){
     BasicMob.call(this,name,x,y);
 }//*/
 
-function Barbarian(x,y){
-    this.a=0
-    BasicMob.call(this,"barbarian",x,y)
-    this.damages=100
-    this.attacked=null;
-    this.coins=0;
-    this.attack=function(mob){
-        this.rotateTo(mob);
-        this.setState(this.push);
-        this.attacked=mob;
-    };
-    this._nextStep=this.nextStep;
+function BarbarianOptimized(x,y){
+    this.name=name;
+    
+    this.stay=loadImage("char/barbarian/stay.png", false);
+    this.stay.angles=16
+    this.stay.steps=8
+
+    this.run=loadImage("char/barbarian/run.png", false);
+    this.run.angles=16
+    this.run.steps=8
+    
+    this.attack=loadImage("char/barbarian/push.png", false);
+    this.attack.angles=16
+    this.attack.steps=18
+    
+    this.currentState=this.stay;
+    this.step=0;
+    this.angle=0;
+    Shape.call(this, this.currentState, x, y);
+    this.rotate = function(sx,sy){
+        var l=this.run.angles;
+        this.angle=Math.round((Math.atan2(sy, sx)/Math.PI+2.75)*l/2+l/2)%l
+    }
+    this.rotateTo = function(point){
+        this.rotate(point.x-this.x,point.y-this.y);
+    }
+    this.setState=function(state){
+        if(this.currentState!=state){
+            this.currentState=state;
+            this.step=-1;
+        }
+    }
+    this._nextStep=function(){
+        var sx=dx=(this.to_x - this.x),
+            sy=dy=(this.to_y - this.y),
+            st=16, 
+            x=this.x, y=this.y;
+        
+        if(Math.abs(dx)>st || Math.abs(dy)>st){ 
+            sx=st * dx / Math.sqrt((dx*dx) + (dy*dy));
+            sy=sx * dy / dx;
+        }
+        var run=false;
+        if(isStep(x+sx,y+sy)){run=true;}
+        else if(isStep(this.x,y+sy)){run=true;sx=0;}
+        else if(isStep(x+sx,this.y)){run=true;sy=0;}
+        
+        if(Math.sqrt((sx*sx)+(sy*sy))>5){
+            x += sx;
+            y += sy;
+            if(run){
+                this.x=x;
+                this.y=y;
+                this.setState(this.run);
+            }
+            else this.setState(this.stay);
+            this.rotate(sx,sy);
+        }
+        else this.setState(this.stay);
+        this.step=(this.step+1)%(this.currentState.steps);
+        this.sprite=this.currentState;
+    }
     this.nextStep=function(){
         if(!this.isAboveHero())return;
-        if(this.currentState == this.push){
-            if(this.step==(this.push[0].length-1)){
+        if(this.currentState == this.attack){
+            if(this.step==(this.attack.steps-1)){
                 this.currentState=this.stay;
                 this.step=-1;
                 if(this.attacked)this.attacked.damage(this.damages);
             }
-            this.step=(this.step+1)%(this.currentState[this.a].length);
-            var oldsprite=this.sprite;
-            this.sprite=loadImage(this.currentState[this.a][this.step]);
-            freeImage(oldsprite);
-            this.offset_y=this.currentState==this.push?35:5
+            this.step=(this.step+1)%(this.currentState.steps);
+            this.sprite=this.currentState;
+            this.offset_y=this.currentState==this.attack?35:5
         }else this._nextStep();
     }
-    this.rotate = function(sx,sy){
-        var l=this.run.length
-        this.a=Math.round((Math.atan2(sy, sx)/Math.PI+2.75)*l/2+l/2)%l
+    this.origin_health=1000
+    this.health=this.origin_health
+    this.resistance=10 // damage resistance, less than 1000
+    this.damages=100
+    this.doAttack=function(mob){
+        this.rotateTo(mob);
+        this.setState(this.attack);
+        this.attacked=mob;
+    };
+    this.use = function(mob){
+        if(mob.doAttack) mob.doAttack(this);
+    };
+    this.damage=function(damage){
+        var health=this.health - damage * 1000/(1000-this.resistance);
+        if(health<=0){
+            this.health=0;
+            remove(monsters,this);
+            if(Math.random()>0.5) coins.push(new Coin(this.x, this.y));
+            log.push(this.name+" is die");
+        }else{
+            this.health=health;
+        }
     }
-}//*/
+}
 
 })();
