@@ -2,49 +2,17 @@
 <html>
 <head>
 <style>
-html, body{
+html, body, canvas{
 	margin: 0;
 	padding: 0;
 	background: black;
-}
-#bar{
-	position: absolute;
-	background: gray;
-	width: 800px;
-	height: 50px;
-	top: 550px;
-	left: 0px;
-}
-#health, #mana{
-	position: absolute;
-	border: 1px solid gray;
-	top: 480px;
-}
-#health, #mana, #health div, #mana div{
-	-webkit-border-radius: 50px;
-	width: 100px;
-	height: 100px;
-}
-#health{
-	left: 50px;
-}
-#mana {
-	left: 650px;
-}
-#health div{
-	background: #800;
-}
-#mana div{
-	background: #008;
+	display:block;
 }
 </style>
 </head>
 <body>
-<canvas id="floor" width="800" height="600"></canvas>
-
-<!-- div id="bar"></div>
-<div id="health"><div></div></div>
-<div id="mana"><div></div></div-->
+<canvas id="floor" width="980" height="661"></canvas>
+<script>window.onerror=alert</script>
 <script src="diablo.js"></script>
 </body>
 </html>
