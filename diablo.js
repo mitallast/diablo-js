@@ -483,7 +483,7 @@ function BarbarianOptimized(x,y){
     
     this.attack=loadImage("char/barbarian/push.png", false);
     this.attack.angles=16
-    this.attack.steps=18
+    this.attack.steps=10
     
     this.currentState=this.stay;
     this.step=0;
