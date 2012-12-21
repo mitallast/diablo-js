@@ -1,36 +1,13 @@
 (function(undefined) {
 
 var imageCount=0;
-var img_cache={};
-function loadImage(url, gc){
-    gc=typeof gc == typeof undefined ? true : gc;
-    if(img_cache[url]){
-        if(gc)
-        img_cache[url].refs++;
-        return img_cache[url];
-    }
+function loadImage(url){
     var i=new Image();
-    i.onload=function(){
-        imageCount--; 
-    }
+    i.onload=function(){ imageCount--; }
     i.src=url;
-    if(gc)
-    i.refs=1;
     imageCount++;
-    img_cache[url]=i;
     return i;
 };
-function freeImage(i){
-    if(i.regs){ // is gc used
-        i.refs--;
-        // double check
-        if(i.refs<1){
-            setTimeout(function(){
-                if(i.refs<1) delete img_cache[i.src];
-            }, 10000);
-        }
-    }
-}
 
 var tw=512, th=tw/2, s=tw*0.705, a=Math.PI/4, log=[];
 var asin=acos=Math.sin(a);
@@ -67,56 +44,26 @@ floor.w=floor.canvas.width;
 floor.h=floor.canvas.height;
 
 var tileMap={
-    0: loadImage("texture/tileable-grey.png", true),
-    1: loadImage("texture/dirtsand.png", true),
-    2: loadImage("texture/tileable-grey.png", true),
-    3: loadImage("texture/stone.png", true),
+    0: loadImage("texture/tileable-grey.png"),
+    1: loadImage("texture/dirtsand.png"),
+    2: loadImage("texture/tileable-grey.png"),
+    3: loadImage("texture/stone.png"),
 };
 
-var barrelSprite=loadImage("sprite/barrel64.png", true);
-var coinSprite=loadImage("sprite/coins10.png", true);
-var houseSprite=loadImage("sprite/house.png", true);
+var barrelSprite=loadImage("sprite/barrel64.png");
+var coinSprite=loadImage("sprite/coins10.png");
+var houseSprite=loadImage("sprite/house.png");
+var barbarianStay=loadImage("char/barbarian/stay.png");
+var barbarianRun=loadImage("char/barbarian/run.png");
+var barbarianAttack=loadImage("char/barbarian/push.png");
 
-// pre-fetch textures for Person class
-var personTextures={};
-var personTypes=["king_artur","safria_elf"];
-for(var pt in personTypes){
-    var name=personTypes[pt];
-    var p={stay:[],run:[]};
-    for(var i=1;i<=8;i++){
-        p.stay[i-1]=["char/"+name+"/stand/"+i+".gif"];
-        p.run[i-1]=[];
-        for(var j=1;j<=15;j++){
-            var j_s=j<10?"0"+j:j;
-            p.run[i-1].push("char/"+name+"/anim/"+i+"_"+j_s+".gif");
-        }
-    }
-    personTextures[name]=p;
-}//*/
-
-var bt=personTextures["barbarian"]={stay:[],run:[],attack:[]};
-for(var ba=0;ba<=15;ba++){
-    bt.stay[ba]=[];
-    bt.run[ba]=[];
-    bt.attack[ba]=[];
-    for(var t=0;t<=0;t++) bt.stay[ba].push("char/barbarian/stay/"+ba+"-"+t+".png");
-    for(var t=0;t<=7;t++) bt.run[ba].push("char/barbarian/run/"+ba+"-"+t+".png");
-    for(var t=0;t<=8;t++) bt.attack[ba].push("char/barbarian/push/"+ba+"-"+t*2+".png");
-}//*/
-
-var hero=new BarbarianOptimized(s*1.5,s*1.5);
+var hero=new Barbarian(s*1.5,s*1.5);
 hero.health=hero.origin_health=1000;
 var monsters=[];
 
-// peacefull mobs
-/*
-for(var i=0;i<10;i++) {
-    monsters.push(new PeacefullMob(Math.random()>0.5?"king_artur":"safria_elf",randomx(),randomy()));
-}
-*///*/
 // aggresive mobs
 for(var i=0;i<10;i++) {
-    monsters.push(new BarbarianOptimized(randomx(),randomy()));
+    monsters.push(new Barbarian(randomx(),randomy()));
 }//*/
 
 
@@ -387,104 +334,17 @@ function Coin(x,y){
     }
 }//*/
 
-function Person(name,x,y){
+function Barbarian(x,y){
     this.name=name;
-    this.stay=personTextures[this.name].stay;
-    this.run=personTextures[this.name].run;
-    this.attack=personTextures[this.name].attack;
-    this.currentState=this.stay;
-    this.step=0;
-    Shape.call(this,this.stay[this.a][0],x,y);
-    this.to_x=this.x;
-    this.to_y=this.y;
-    this.nextStep=function(){
-        var sx=dx=(this.to_x - this.x),
-            sy=dy=(this.to_y - this.y),
-            st=6, 
-            x=this.x, y=this.y;
-        
-        if(Math.abs(dx)>st || Math.abs(dy)>st){ 
-            sx=st * dx / Math.sqrt((dx*dx) + (dy*dy));
-            sy=sx * dy / dx;
-        }
-        var run=false;
-        if(isStep(x+sx,y+sy)){run=true;}
-        else if(isStep(this.x,y+sy)){run=true;sx=0;}
-        else if(isStep(x+sx,this.y)){run=true;sy=0;}
-        
-        if(Math.sqrt((sx*sx)+(sy*sy))>5){
-            x += sx;
-            y += sy;
-            if(run){
-                this.x=x;
-                this.y=y;
-                this.setState(this.run);
-            }
-            else this.setState(this.stay);
-            this.rotate(sx,sy);
-        }
-        else this.setState(this.stay);
-        this.step=(this.step+1)%(this.currentState[this.a].length);
-        var oldsprite=this.sprite;
-        this.sprite=loadImage(this.currentState[this.a][this.step]);
-        freeImage(oldsprite);
-    }
-    this.setState=function(state){
-        if(this.currentState!=state){
-            this.currentState=state;
-            this.step=-1;
-        }
-    }
-    this.rotate = function(sx,sy){
-        var l=this.run.length;
-        this.a=Math.round((Math.atan2(sy, sx)/Math.PI+2.75)%2*l/2)%l;
-    }
-    this.rotateTo = function(point){
-        this.rotate(point.x-this.x,point.y-this.y);
-    }
-}//*/
-
-function BasicMob(name,x,y){
-    Person.call(this,name,x,y)
-    this.origin_health=1000
-    this.health=this.origin_health
-    this.resistance=10 // damage resistance, less than 1000
-    this.use = function(mob){
-        if(mob.doAttack) mob.doAttack(this);
-    };
-    this.damage=function(damage){
-        var health=this.health - damage * 1000/(1000-this.resistance);
-        if(health<=0){
-            this.health=0;
-            remove(monsters,this);
-            if(Math.random()>0.5) coins.push(new Coin(this.x, this.y));
-            log.push(this.name+" is die");
-        }else{
-            this.health=health;
-        }
-    }
-}
-
-function PeacefullMob(name,x,y){
-    this.a=4;
-    BasicMob.call(this,name,x,y);
-}//*/
-
-function BarbarianOptimized(x,y){
-    this.name=name;
-    
-    this.stay=loadImage("char/barbarian/stay.png", false);
+    this.stay=barbarianStay
     this.stay.angles=16
     this.stay.steps=8
-
-    this.run=loadImage("char/barbarian/run.png", false);
+    this.run=barbarianRun
     this.run.angles=16
     this.run.steps=8
-    
-    this.attack=loadImage("char/barbarian/push.png", false);
+    this.attack=barbarianAttack
     this.attack.angles=16
     this.attack.steps=10
-    
     this.currentState=this.stay;
     this.step=0;
     this.angle=0;
