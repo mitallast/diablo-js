@@ -12,14 +12,14 @@ function loadImage(url){
 var tw=512, th=tw/2, s=tw*0.705, a=Math.PI/4, log=[];
 var asin=acos=Math.sin(a);
 var floorMap=[
-    "000000000000003000000000000000000000000000000000".split(""),
-    "011110000000003000000000000000000000000000000000".split(""),
-    "000210000000003000000000000000000000000000000000".split(""),
+    "000000000000000000000000000000000000000000000000".split(""),
+    "011110000000000000000000000000000000000000000000".split(""),
+    "000210000000000000000000000000000000000000000000".split(""),
     "000111111111111111110000000000000000000000000000".split(""),
-    "000000001000003001000000000000000000000000000000".split(""),
-    "000000001000003001111111100000000000000000000000".split(""),
-    "000000001000003000000000011111100000000000000000".split(""),
-    "333333331333333000000000000000000000000000000000".split(""),
+    "000000001000000001000000000000000000000000000000".split(""),
+    "000000001000000001111111100000000000000000000000".split(""),
+    "000000001000000000000000011111100000000000000000".split(""),
+    "000000001000000000000000000000000000000000000000".split(""),
     "000000001100000000000000000000000000000000000000".split(""),
     "000000001111111000000000000000000000000000000000".split(""),
     "000000000100011000000000000000000000000000000000".split(""),
@@ -43,13 +43,6 @@ var floor=document.getElementById("floor").getContext("2d");
 floor.w=floor.canvas.width;
 floor.h=floor.canvas.height;
 
-var tileMap={
-    0: loadImage("texture/tileable-grey.png"),
-    1: loadImage("texture/dirtsand.png"),
-    2: loadImage("texture/tileable-grey.png"),
-    3: loadImage("texture/stone.png"),
-};
-
 var barrelSprite=loadImage("sprite/barrel64.png");
 var coinSprite=loadImage("sprite/coins10.png");
 var houseSprite=loadImage("sprite/house.png");
@@ -58,10 +51,14 @@ var barbarianRun=loadImage("char/barbarian/run.png");
 var barbarianAttack=loadImage("char/barbarian/push.png");
 
 var hero=new Barbarian(s*1.5,s*1.5);
-hero.health=hero.origin_health=1000;
-var monsters=[];
+hero.health=hero.origin_health=5000;
+setInterval(function(){
+    // restore hero health
+    hero.health=Math.min(hero.health+100, hero.origin_health);
+},2000);
 
 // aggresive mobs
+var monsters=[];
 for(var i=0;i<10;i++) {
     monsters.push(new Barbarian(randomx(),randomy()));
 }//*/
@@ -85,10 +82,7 @@ setInterval(function() { // random step for mobs, attack hero
     }
 }, 200);//*/
 
-// restore hero health
-setInterval(function(){
-    hero.health=Math.min(hero.health+100, hero.origin_health);
-},10000);
+
 
 
 var barrels=[];
@@ -163,9 +157,9 @@ function renderHeroHealth(){
 
 function processClick(){
     var zb=[];
-    for(var m in monsters)zb.push(monsters[m]);
-    for(var b in barrels)zb.push(barrels[b]);
-    for(var c in coins)zb.push(coins[c]);
+    for(var m in monsters)  if(monsters[m].isAboveHero())   zb.push(monsters[m]);
+    for(var b in barrels)   if(barrels[b].isAboveHero())    zb.push(barrels[b]);
+    for(var c in coins)     if(coins[c].isAboveHero())      zb.push(coins[c]);
     zb.sort(function(a,b){ return b.x+b.y-a.x-a.y; });// first is asc
     var cx=(floor.click_x - floor.click_y)*acos,
         cy=(floor.click_x + floor.click_y)/2*asin;
@@ -174,7 +168,10 @@ function processClick(){
         var spr=m.sprite;
         var sx=(m.x - m.y)*acos+m.offset_x,
             sy=(m.x + m.y)/2*asin+m.offset_y;
-        if( cx >= sx-spr.width/2 && cx <= sx+spr.width/2 && cy >= sy-spr.height && cy <= sy){
+        
+        var spr_w = spr.steps ? spr.width/spr.steps : spr.width;
+        var spr_h = spr.angles ? spr.height/spr.angles : spr.height;
+        if( cx >= sx-spr_w/2 && cx <= sx+spr_w/2 && cy >= sy-spr_h && cy <= sy){
             m.use(hero)
             return true;
         }
@@ -185,14 +182,13 @@ function processClick(){
 function renderObjects(){
     var zb=[];// z-buffer
     zb.push(hero);
-    for(var m in monsters)zb.push(monsters[m]);
-    for(var b in barrels)zb.push(barrels[b]);
-    for(var c in coins)zb.push(coins[c]);
-    for(var h in houses)zb.push(houses[h]);
+    for(var m in monsters) if(monsters[m].isAboveHero()) zb.push(monsters[m]);
+    for(var b in barrels) if(barrels[b].isAboveHero()) zb.push(barrels[b]);
+    for(var c in coins) if(coins[c].isAboveHero()) zb.push(coins[c]);
+    for(var h in houses) if(houses[h].isAboveHero()) zb.push(houses[h]);
     zb.sort(function(b,a){ return b.x+b.y-a.x-a.y; });//first is desc
     for(z in zb){
         var m=zb[z];
-        if(!m.isAboveHero()) continue;
         floor.save()
         var sx=(m.x - m.y)*acos+m.offset_x,
             sy=(m.x + m.y)/2*asin+m.offset_y;
@@ -237,7 +233,6 @@ function renderObjects(){
 function renderFloor() {
     floor.save();
     floor.translate(floor.w/2-th, floor.h/2);// translate to center
-    
     var fdx=Math.floor(hero.x/s), // hero tile
         fdy=Math.floor(hero.y/s),
         miny=Math.max(0, fdy-3), // calculate camera visible tiles
@@ -252,18 +247,65 @@ function renderFloor() {
     // render
     for(var y=miny;y<=maxy;y++){
         for(var x=minx;x<=maxx;x++){
-            var f=floorMap[y][x];
-            if(f==" ")continue;
-            var tile=tileMap[f];
-            var tx=( x - y ) * th,
-                ty=( x + y ) * th/2;
-            floor.drawImage(tile, tx, ty, tw+1, th+1);
+            var tile= getFloorTile(x, y);
+            if(tile){
+                var tx=( x - y ) * th,
+                    ty=( x + y ) * th/2;
+                floor.drawImage(tile, tx, ty, tw+1, th+1);                
+            }
         }
     }
     floor.translate(th, 0); // retranslate for diamond textures
     renderObjects();
     floor.restore();
 }//*/
+
+var tileMap={
+    "0000": loadImage("dirt/dirt0000.png"),
+    "0001": loadImage("dirt/dirt0001.png"),
+    "0010": loadImage("dirt/dirt0010.png"),
+    "0011": loadImage("dirt/dirt0011.png"),
+    "0100": loadImage("dirt/dirt0100.png"),
+    "0101": loadImage("dirt/dirt0101.png"),
+    "0110": loadImage("dirt/dirt0110.png"),
+    "0111": loadImage("dirt/dirt0111.png"),
+    "1000": loadImage("dirt/dirt1000.png"),
+    "1001": loadImage("dirt/dirt1001.png"),
+    "1010": loadImage("dirt/dirt1010.png"),
+    "1011": loadImage("dirt/dirt1011.png"),
+    "1100": loadImage("dirt/dirt1100.png"),
+    "1101": loadImage("dirt/dirt1101.png"),
+    "1110": loadImage("dirt/dirt1110.png"),
+    "1111": loadImage("dirt/dirt1111.png"),
+    "0":    loadImage("dirt/gray.png"),
+};
+
+function getFloorTile(x, y)
+{
+    var f = floorMap[y][x];
+    switch(f){
+        case "2":
+        case "0":
+            return tileMap["0"];
+        case "1":
+            var tileCode="";
+            tileCode+=(isWayFloor(x, y+1)?"1":"0");
+            tileCode+=(isWayFloor(x+1, y)?"1":"0");
+            tileCode+=(isWayFloor(x, y-1)?"1":"0");
+            tileCode+=(isWayFloor(x-1, y)?"1":"0");
+            if(x==1 && y==1){
+                console.log(x, y, tileCode);
+            }
+            return tileMap[tileCode];
+        default:
+            return null;
+    }
+}
+
+function isWayFloor(x, y)
+{
+    return floorMap[y] ? floorMap[y][x] == "1" : false;
+}
 
 function remove(ar,v){var i=ar.indexOf(v);if(i>=0)ar.splice(i,1);}
 function randomx(){return Math.floor(Math.random()*(floorMap[0].length/3)*s);}
@@ -320,13 +362,13 @@ function Barrel(x, y){
     };
     this.damage=function(damage){
         remove(barrels,this);
-        if(Math.random()>0.5)coins.push(new Coin(this.x, this.y));
+        if(Math.random()>0.7)coins.push(new Coin(this.x, this.y));
     };
 }//*/
 
 function Coin(x,y){
     Shape.call(this,coinSprite,x,y);
-    this.coins=Math.floor(Math.random()*100);
+    this.coins=Math.floor(Math.random()*1000);
     this.use=function(mob){
         remove(coins,this);
         mob.coins+=this.coins;
@@ -398,21 +440,28 @@ function Barbarian(x,y){
             if(this.step==(this.attack.steps-1)){
                 this.currentState=this.stay;
                 this.step=-1;
-                if(this.attacked)this.attacked.damage(this.damages);
+                if(this.attacked){
+                    this.attacked.damage(this.getDamage());
+                    this.attacked=null;
+                }
             }
             this.step=(this.step+1)%(this.currentState.steps);
             this.sprite=this.currentState;
             this.offset_y=this.currentState==this.attack?35:5
         }else this._nextStep();
     }
+    this.coins=0;
     this.origin_health=1000
     this.health=this.origin_health
     this.resistance=10 // damage resistance, less than 1000
-    this.damages=100
+    this.currentDamage=100
+    this.criticalDamage=0.4;
     this.doAttack=function(mob){
-        this.rotateTo(mob);
-        this.setState(this.attack);
-        this.attacked=mob;
+        if(this.attacked!=mob){
+            this.rotateTo(mob);
+            this.setState(this.attack);
+            this.attacked=mob;            
+        }
     };
     this.use = function(mob){
         if(mob.doAttack) mob.doAttack(this);
@@ -427,6 +476,9 @@ function Barbarian(x,y){
         }else{
             this.health=health;
         }
+    }
+    this.getDamage=function(){
+        return this.currentDamage * ( Math.random() <= this.criticalDamage  && this == hero ? 4 : 1 );
     }
 }
 
