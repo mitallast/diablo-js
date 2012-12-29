@@ -45,16 +45,36 @@ floor.h=floor.canvas.height;
 
 var barrelSprite=loadImage("sprite/barrel64.png");
 var coinSprite=loadImage("sprite/coins10.png");
+var potionSprite=loadImage("sprite/potions.png");
 var houseSprite=loadImage("sprite/house.png");
 var barbarianStay=loadImage("char/barbarian/stay.png");
 var barbarianRun=loadImage("char/barbarian/run.png");
 var barbarianAttack=loadImage("char/barbarian/push.png");
+var tileMap={
+    "0000": loadImage("dirt/dirt0000.png"),
+    "0001": loadImage("dirt/dirt0001.png"),
+    "0010": loadImage("dirt/dirt0010.png"),
+    "0011": loadImage("dirt/dirt0011.png"),
+    "0100": loadImage("dirt/dirt0100.png"),
+    "0101": loadImage("dirt/dirt0101.png"),
+    "0110": loadImage("dirt/dirt0110.png"),
+    "0111": loadImage("dirt/dirt0111.png"),
+    "1000": loadImage("dirt/dirt1000.png"),
+    "1001": loadImage("dirt/dirt1001.png"),
+    "1010": loadImage("dirt/dirt1010.png"),
+    "1011": loadImage("dirt/dirt1011.png"),
+    "1100": loadImage("dirt/dirt1100.png"),
+    "1101": loadImage("dirt/dirt1101.png"),
+    "1110": loadImage("dirt/dirt1110.png"),
+    "1111": loadImage("dirt/dirt1111.png"),
+    "0":    loadImage("dirt/gray.png"),
+};
 
 var hero=new Barbarian(s*1.5,s*1.5);
-hero.health=hero.origin_health=5000;
+hero.health=hero.origin_health=1000;
 setInterval(function(){
     // restore hero health
-    hero.health=Math.min(hero.health+100, hero.origin_health);
+    hero.health=Math.min(hero.health+10, hero.origin_health);
 },2000);
 
 // aggresive mobs
@@ -62,7 +82,6 @@ var monsters=[];
 for(var i=0;i<10;i++) {
     monsters.push(new Barbarian(randomx(),randomy()));
 }//*/
-
 
 setInterval(function() { // random step for mobs, attack hero
     var m=monsters[Math.ceil(Math.random()*(monsters.length-1))];
@@ -82,13 +101,11 @@ setInterval(function() { // random step for mobs, attack hero
     }
 }, 200);//*/
 
-
-
-
 var barrels=[];
 for(var i=0;i<33;i++) barrels.push(new Barrel(randomx(),randomy()));
-barrels.push(new Barrel(100,100));
 var coins=[];
+var potions=[];
+for(var i=0;i<33;i++) potions.push(new PotionHealth(randomx(), randomy()));
 var houses=[];
 for(var y in floorMap){ // pre fetch house sprites;
     for(var x in floorMap[y]){
@@ -112,6 +129,17 @@ floor.canvas.onclick=function(e) {
     hero.to_x=floor.click_x;
     hero.to_y=floor.click_y;
 }//*/
+window.onkeydown=function(e){
+    var beltKeys=[49,50,51,52,53,54,55,56,57,48];
+    var beltIndex = beltKeys.indexOf(e.keyCode);
+    if(beltIndex>=0){
+        if(hero.belt.items[beltIndex] instanceof PotionHealth){
+           hero.belt.items[beltIndex].drink(hero);
+           remove(hero.belt.items,hero.belt.items[beltIndex]);
+        }
+        return false;
+    }
+}
 
 var lastStep=0;
 setInterval(function() {
@@ -130,6 +158,7 @@ setInterval(function() {
     renderFloor();
     renderLog();
     renderHeroHealth()
+    renderHeroBelt();
     lastStep=0;
 }, 66);//*/
 
@@ -155,11 +184,32 @@ function renderHeroHealth(){
     floor.restore();
 }
 
+function renderHeroBelt(){
+    floor.save();
+    var tile=potionSprite;
+    var tw = tile.width / tile.steps;
+    var th = tile.height / tile.angles;        
+    for(var i=0;i<hero.belt.size;i++){
+        floor.drawImage(tile, 
+            tw*2, th*3, tw, th,
+            200+tw*i, 600, tw, th);
+        var p = hero.belt.items[i];
+        if(p){
+            floor.drawImage(tile, 
+                tw*p.step, th*p.angle, tw, th,
+                200+tw*i, 600, tw, th);
+        }
+    }
+    floor.restore();
+}
+
 function processClick(){
     var zb=[];
     for(var m in monsters)  if(monsters[m].isAboveHero())   zb.push(monsters[m]);
     for(var b in barrels)   if(barrels[b].isAboveHero())    zb.push(barrels[b]);
     for(var c in coins)     if(coins[c].isAboveHero())      zb.push(coins[c]);
+    for(var c in potions)     if(potions[c].isAboveHero())      zb.push(potions[c]);
+    
     zb.sort(function(a,b){ return b.x+b.y-a.x-a.y; });// first is asc
     var cx=(floor.click_x - floor.click_y)*acos,
         cy=(floor.click_x + floor.click_y)/2*asin;
@@ -169,8 +219,8 @@ function processClick(){
         var sx=(m.x - m.y)*acos+m.offset_x,
             sy=(m.x + m.y)/2*asin+m.offset_y;
         
-        var spr_w = spr.steps ? spr.width/spr.steps : spr.width;
-        var spr_h = spr.angles ? spr.height/spr.angles : spr.height;
+        var spr_w = spr.angles ? spr.width/spr.angles : spr.width;
+        var spr_h = spr.steps ? spr.height/spr.steps : spr.height;
         if( cx >= sx-spr_w/2 && cx <= sx+spr_w/2 && cy >= sy-spr_h && cy <= sy){
             m.use(hero)
             return true;
@@ -185,6 +235,7 @@ function renderObjects(){
     for(var m in monsters) if(monsters[m].isAboveHero()) zb.push(monsters[m]);
     for(var b in barrels) if(barrels[b].isAboveHero()) zb.push(barrels[b]);
     for(var c in coins) if(coins[c].isAboveHero()) zb.push(coins[c]);
+    for(var c in potions) if(potions[c].isAboveHero()) zb.push(potions[c]);
     for(var h in houses) if(houses[h].isAboveHero()) zb.push(houses[h]);
     zb.sort(function(b,a){ return b.x+b.y-a.x-a.y; });//first is desc
     for(z in zb){
@@ -199,7 +250,7 @@ function renderObjects(){
         floor.shadowBlur = 10
         floor.shadowOffsetX = -10
         floor.shadowOffsetY = -10
-        if(tile.angles && tile.steps){
+        if(tile.steps && tile.angles){
             var tw = tile.width / tile.steps;
             var th = tile.height / tile.angles;        
             floor.drawImage(tile, 
@@ -213,8 +264,8 @@ function renderObjects(){
         if(m.health && m.origin_health && m!= hero){
             floor.save()
             floor.globalAlpha=0.7
-            if(m.sprite.angles){
-                sy-=tile.height/tile.angles;
+            if(m.sprite.steps){
+                sy-=tile.height/tile.steps;
             }else{
                 sy-=m.sprite.height;
             }
@@ -260,26 +311,6 @@ function renderFloor() {
     floor.restore();
 }//*/
 
-var tileMap={
-    "0000": loadImage("dirt/dirt0000.png"),
-    "0001": loadImage("dirt/dirt0001.png"),
-    "0010": loadImage("dirt/dirt0010.png"),
-    "0011": loadImage("dirt/dirt0011.png"),
-    "0100": loadImage("dirt/dirt0100.png"),
-    "0101": loadImage("dirt/dirt0101.png"),
-    "0110": loadImage("dirt/dirt0110.png"),
-    "0111": loadImage("dirt/dirt0111.png"),
-    "1000": loadImage("dirt/dirt1000.png"),
-    "1001": loadImage("dirt/dirt1001.png"),
-    "1010": loadImage("dirt/dirt1010.png"),
-    "1011": loadImage("dirt/dirt1011.png"),
-    "1100": loadImage("dirt/dirt1100.png"),
-    "1101": loadImage("dirt/dirt1101.png"),
-    "1110": loadImage("dirt/dirt1110.png"),
-    "1111": loadImage("dirt/dirt1111.png"),
-    "0":    loadImage("dirt/gray.png"),
-};
-
 function getFloorTile(x, y)
 {
     var f = floorMap[y][x];
@@ -293,9 +324,6 @@ function getFloorTile(x, y)
             tileCode+=(isWayFloor(x+1, y)?"1":"0");
             tileCode+=(isWayFloor(x, y-1)?"1":"0");
             tileCode+=(isWayFloor(x-1, y)?"1":"0");
-            if(x==1 && y==1){
-                console.log(x, y, tileCode);
-            }
             return tileMap[tileCode];
         default:
             return null;
@@ -376,20 +404,51 @@ function Coin(x,y){
     }
 }//*/
 
+function Potion(x,y){
+    Shape.call(this,potionSprite,x,y);
+    this.sprite.steps=6;
+    this.sprite.angles=4;
+    this.use=function(mob){
+        if(mob.addToBelt(this)){
+            remove(potions,this);
+        }
+    }
+}
+
+function PotionHealth(x,y){
+    Potion.call(this,x,y);
+    this.step=0;
+    this.angle=0;
+    this.health=1000;
+    this.drink=function(mob){
+        mob.health=Math.min(mob.origin_health, mob.health+this.health);
+    }
+}
+
 function Barbarian(x,y){
     this.name=name;
     this.stay=barbarianStay
     this.stay.angles=16
     this.stay.steps=8
     this.run=barbarianRun
-    this.run.angles=16
     this.run.steps=8
+    this.run.angles=16
     this.attack=barbarianAttack
-    this.attack.angles=16
     this.attack.steps=10
+    this.attack.angles=16
     this.currentState=this.stay;
     this.step=0;
     this.angle=0;
+    this.belt={items:[], size:10};
+    this.addToBelt=function(potion){
+        for(var i=0;i<this.belt.size;i++){
+            if(typeof this.belt.items[i] == "undefined"){
+                this.belt.items[i]=potion;
+                return true;
+            }
+        }
+        return false;
+    }
     Shape.call(this, this.currentState, x, y);
     this.rotate = function(sx,sy){
         var l=this.run.angles;
