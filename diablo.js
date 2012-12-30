@@ -75,6 +75,7 @@ var monsterMap={
         A1: loadImage("monsters/SK/A1/map.png",8,16),
         NU: loadImage("monsters/SK/NU/map.png",8,8),
         WL: loadImage("monsters/SK/WL/map.png",8,8),
+        attackOffset:10,
     },
     FS: {
         A1: loadImage("monsters/FS/A1/map.png",8,17),
@@ -102,23 +103,27 @@ setInterval(function(){
 // aggresive mobs
 var monsters=[];
 for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SK'));
+monsters.push(new AgressiveMob(50,50,'SK'));
 for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'FS'));
 for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SI'));
 
 setInterval(function() { // random step for mobs, attack hero
     var m=monsters[Math.ceil(Math.random()*(monsters.length-1))];
-    m.to_x=m.x+(Math.random()*s-s/2);
-    m.to_y=m.y+(Math.random()*s-s/2);
+    if(typeof m.attacked != "object"){
+        m.to_x=m.x+(Math.random()*s-s/2);
+        m.to_y=m.y+(Math.random()*s-s/2);
+    }
     for(var i in monsters){
         var m=monsters[i], attackDist=100;
         if(m.attack && m.isAboveHero()){
             if(Math.abs(hero.x-m.x)<attackDist &&
                Math.abs(hero.y-m.y)<attackDist){
                m.doAttack(hero);
+               m.to_x = m.x;
+               m.to_y = m.y;
             }else{
-                console.log(hero.x, hero.y);
-                m.to_x=hero.x
-                m.to_y=hero.y
+                m.to_x=hero.x;
+                m.to_y=hero.y;
             }
         }
     }
@@ -269,11 +274,6 @@ function renderObjects(){
         var tile=m.sprite;
         // render sprite
         if(m.isOverHero && m.isOverHero()) floor.globalAlpha=0.5;
-        floor.shadowColor = "rgba(0,0,0,0.7)"
-        floor.shadowBlur = 10
-        floor.shadowOffsetX = -10
-        floor.shadowOffsetY = -10
-        console.log(tile, tile.steps);
         if(tile.steps && tile.angles){
             var tw = tile.width / tile.steps;
             var th = tile.height / tile.angles;        
@@ -512,7 +512,7 @@ function Mob(x,y,name){
 function AgressiveMob(x,y,name){
     Mob.call(this,x,y,name);
     this.attack=monsterMap[name].A1
-    this.attackOffset=0;
+    this.attackOffset=monsterMap[name].attackOffset||0;
     this.normalOffset=0;
     this._nextStep=this.nextStep;
     this.nextStep=function(){
