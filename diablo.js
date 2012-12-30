@@ -1,15 +1,19 @@
 (function(undefined) {
 
 var imageCount=0;
-function loadImage(url){
+function loadImage(url,angles,steps){
     var i=new Image();
     i.onload=function(){ imageCount--; }
     i.src=url;
     imageCount++;
+    if(typeof angles!="undefined" && typeof steps!="undefined"){
+        i.angles=angles;
+        i.steps=steps;
+    }
     return i;
 };
 
-var tw=512, th=tw/2, s=tw*0.705, a=Math.PI/4, log=[];
+var tw=512, th=tw/2, s=tw*0.705, a=Math.PI/4;
 var asin=acos=Math.sin(a);
 var floorMap=[
     "000000000000000000000000000000000000000000000000".split(""),
@@ -47,9 +51,6 @@ var barrelSprite=loadImage("sprite/barrel64.png");
 var coinSprite=loadImage("sprite/coins10.png");
 var potionSprite=loadImage("sprite/potions.png");
 var houseSprite=loadImage("sprite/house.png");
-var barbarianStay=loadImage("char/barbarian/stay.png");
-var barbarianRun=loadImage("char/barbarian/run.png");
-var barbarianAttack=loadImage("char/barbarian/push.png");
 var tileMap={
     "0000": loadImage("dirt/dirt0000.png"),
     "0001": loadImage("dirt/dirt0001.png"),
@@ -69,9 +70,30 @@ var tileMap={
     "1111": loadImage("dirt/dirt1111.png"),
     "0":    loadImage("dirt/gray.png"),
 };
+var monsterMap={
+    SK: {
+        A1: loadImage("monsters/SK/A1/map.png",8,16),
+        NU: loadImage("monsters/SK/NU/map.png",8,8),
+        WL: loadImage("monsters/SK/WL/map.png",8,8),
+    },
+    FS: {
+        A1: loadImage("monsters/FS/A1/map.png",8,17),
+        NU: loadImage("monsters/FS/NU/map.png",8,12),
+        WL: loadImage("monsters/FS/WL/map.png",8,14),
+    },
+    SI: {
+        A1: loadImage("monsters/SI/A1/map.png",8,16),
+        NU: loadImage("monsters/SI/NU/map.png",8,8),
+        WL: loadImage("monsters/SI/WL/map.png",8,9),
+    },
+    BA: {
+        A1: loadImage("char/barbarian/push.png",16,10),
+        NU: loadImage("char/barbarian/stay.png",16,8),
+        WL: loadImage("char/barbarian/run.png",16,8),
+    }
+};
 
-var hero=new Barbarian(s*1.5,s*1.5);
-hero.health=hero.origin_health=1000;
+var hero=new HeroBarbarian(s*1.5,s*1.5);
 setInterval(function(){
     // restore hero health
     hero.health=Math.min(hero.health+10, hero.origin_health);
@@ -79,9 +101,9 @@ setInterval(function(){
 
 // aggresive mobs
 var monsters=[];
-for(var i=0;i<10;i++) {
-    monsters.push(new Barbarian(randomx(),randomy()));
-}//*/
+for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SK'));
+for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'FS'));
+for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SI'));
 
 setInterval(function() { // random step for mobs, attack hero
     var m=monsters[Math.ceil(Math.random()*(monsters.length-1))];
@@ -89,17 +111,18 @@ setInterval(function() { // random step for mobs, attack hero
     m.to_y=m.y+(Math.random()*s-s/2);
     for(var i in monsters){
         var m=monsters[i], attackDist=100;
-        if(m.attack){
+        if(m.attack && m.isAboveHero()){
             if(Math.abs(hero.x-m.x)<attackDist &&
                Math.abs(hero.y-m.y)<attackDist){
                m.doAttack(hero);
             }else{
+                console.log(hero.x, hero.y);
                 m.to_x=hero.x
                 m.to_y=hero.y
             }
         }
     }
-}, 200);//*/
+}, 200);
 
 var barrels=[];
 for(var i=0;i<33;i++) barrels.push(new Barrel(randomx(),randomy()));
@@ -116,7 +139,7 @@ for(var y in floorMap){ // pre fetch house sprites;
             houses.push(h);
         }
     }
-}//*/
+}
 
 floor.canvas.onclick=function(e) { 
     var mx=e.offsetX - floor.w/2;
@@ -128,7 +151,8 @@ floor.canvas.onclick=function(e) {
     if(isCanClick)if(processClick())return;
     hero.to_x=floor.click_x;
     hero.to_y=floor.click_y;
-}//*/
+}
+
 window.onkeydown=function(e){
     var beltKeys=[49,50,51,52,53,54,55,56,57,48];
     var beltIndex = beltKeys.indexOf(e.keyCode);
@@ -156,11 +180,10 @@ setInterval(function() {
     if(imageCount) return;
     floor.fillStyle="black";floor.fillRect(0,0, floor.w,floor.h);
     renderFloor();
-    renderLog();
     renderHeroHealth()
     renderHeroBelt();
     lastStep=0;
-}, 66);//*/
+}, 66);
 
 function renderHeroHealth(){
     var radius=80, padding=20;
@@ -225,9 +248,9 @@ function processClick(){
             m.use(hero)
             return true;
         }
-    }//*/
+    }
     return false;
-}//*/
+}
 
 function renderObjects(){
     var zb=[];// z-buffer
@@ -250,6 +273,7 @@ function renderObjects(){
         floor.shadowBlur = 10
         floor.shadowOffsetX = -10
         floor.shadowOffsetY = -10
+        console.log(tile, tile.steps);
         if(tile.steps && tile.angles){
             var tw = tile.width / tile.steps;
             var th = tile.height / tile.angles;        
@@ -261,7 +285,7 @@ function renderObjects(){
         }
         floor.restore()
         // health line
-        if(m.health && m.origin_health && m!= hero){
+        if(m.health && m.origin_health && m != hero){
             floor.save()
             floor.globalAlpha=0.7
             if(m.sprite.steps){
@@ -279,7 +303,7 @@ function renderObjects(){
             floor.restore()
         }
     }
-}//*/
+}
 
 function renderFloor() {
     floor.save();
@@ -309,7 +333,7 @@ function renderFloor() {
     floor.translate(th, 0); // retranslate for diamond textures
     renderObjects();
     floor.restore();
-}//*/
+}
 
 function getFloorTile(x, y)
 {
@@ -336,23 +360,15 @@ function isWayFloor(x, y)
 }
 
 function remove(ar,v){var i=ar.indexOf(v);if(i>=0)ar.splice(i,1);}
-function randomx(){return Math.floor(Math.random()*(floorMap[0].length/3)*s);}
-function randomy(){return Math.floor(Math.random()*(floorMap.length/3)*s);}
+function randomx(){return Math.floor(Math.random()*(floorMap[0].length)*s);}
+function randomy(){return Math.floor(Math.random()*(floorMap.length)*s);}
 
 function isStep(x,y){
     var dx=Math.floor(x/s), 
         dy=Math.floor(y/s);
     var t = floorMap[dy] ? floorMap[dy][dx] : floorMap[dy];
     return t=="0"||t=="1";
-}//*/
-
-function renderLog(){
-    floor.save();
-    floor.fillStyle='#fff';
-    floor.font='10px Arial';
-    for(var i in log) floor.fillText(log[i],10,20+(20*i),floor.width-20);
-    floor.restore();
-}//*/
+}
 
 function Shape(sprite,x,y){
     this.x=x;
@@ -366,7 +382,7 @@ function Shape(sprite,x,y){
         if(Math.abs(this.y-hero.y)>maxlen) return false;
         return true;
     };
-}//*/
+}
 
 function House(x,y){
     Shape.call(this,houseSprite,x,y);
@@ -381,7 +397,7 @@ function House(x,y){
             && (hy >= sy+this.offset_y-houseSprite.height)
             && (hy <= sy)
     }
-}//*/
+}
 
 function Barrel(x, y){
     Shape.call(this,barrelSprite,x,y);
@@ -392,7 +408,7 @@ function Barrel(x, y){
         remove(barrels,this);
         if(Math.random()>0.7)coins.push(new Coin(this.x, this.y));
     };
-}//*/
+}
 
 function Coin(x,y){
     Shape.call(this,coinSprite,x,y);
@@ -400,9 +416,8 @@ function Coin(x,y){
     this.use=function(mob){
         remove(coins,this);
         mob.coins+=this.coins;
-        log.push("Found "+this.coins+" coins, now "+mob.coins);
     }
-}//*/
+}
 
 function Potion(x,y){
     Shape.call(this,potionSprite,x,y);
@@ -425,30 +440,14 @@ function PotionHealth(x,y){
     }
 }
 
-function Barbarian(x,y){
+function Mob(x,y,name){
     this.name=name;
-    this.stay=barbarianStay
-    this.stay.angles=16
-    this.stay.steps=8
-    this.run=barbarianRun
-    this.run.steps=8
-    this.run.angles=16
-    this.attack=barbarianAttack
-    this.attack.steps=10
-    this.attack.angles=16
+    this.stay=monsterMap[name].NU
+    this.run=monsterMap[name].WL
     this.currentState=this.stay;
     this.step=0;
     this.angle=0;
-    this.belt={items:[], size:10};
-    this.addToBelt=function(potion){
-        for(var i=0;i<this.belt.size;i++){
-            if(typeof this.belt.items[i] == "undefined"){
-                this.belt.items[i]=potion;
-                return true;
-            }
-        }
-        return false;
-    }
+    this.st=8;
     Shape.call(this, this.currentState, x, y);
     this.rotate = function(sx,sy){
         var l=this.run.angles;
@@ -463,10 +462,10 @@ function Barbarian(x,y){
             this.step=-1;
         }
     }
-    this._nextStep=function(){
+    this.nextStep=function(){
         var sx=dx=(this.to_x - this.x),
             sy=dy=(this.to_y - this.y),
-            st=16, 
+            st=this.st, 
             x=this.x, y=this.y;
         
         if(Math.abs(dx)>st || Math.abs(dy)>st){ 
@@ -493,6 +492,29 @@ function Barbarian(x,y){
         this.step=(this.step+1)%(this.currentState.steps);
         this.sprite=this.currentState;
     }
+    this.origin_health=this.health=1000;
+    this.resistance=10 // damage resistance, less than 1000
+    this.use = function(mob){
+        if(mob.doAttack) mob.doAttack(this);
+    };
+    this.damage=function(damage){
+        var health=this.health - damage * 1000/(1000-this.resistance);
+        if(health<=0){
+            this.health=0;
+            remove(monsters,this);
+            if(Math.random()>0.5) coins.push(new Coin(this.x, this.y));
+        }else{
+            this.health=health;
+        }
+    }
+}
+
+function AgressiveMob(x,y,name){
+    Mob.call(this,x,y,name);
+    this.attack=monsterMap[name].A1
+    this.attackOffset=0;
+    this.normalOffset=0;
+    this._nextStep=this.nextStep;
     this.nextStep=function(){
         if(!this.isAboveHero())return;
         if(this.currentState == this.attack){
@@ -506,38 +528,43 @@ function Barbarian(x,y){
             }
             this.step=(this.step+1)%(this.currentState.steps);
             this.sprite=this.currentState;
-            this.offset_y=this.currentState==this.attack?35:5
+            this.offset_y=this.currentState==this.attack?this.attackOffset:this.normalOffset;
         }else this._nextStep();
     }
-    this.coins=0;
-    this.origin_health=1000
-    this.health=this.origin_health
-    this.resistance=10 // damage resistance, less than 1000
-    this.currentDamage=100
-    this.criticalDamage=0.4;
+    this.currentDamage=30;
+    this.getDamage=function(){
+        return this.currentDamage;
+    }
+    this.attacked=null;
     this.doAttack=function(mob){
         if(this.attacked!=mob){
             this.rotateTo(mob);
             this.setState(this.attack);
             this.attacked=mob;            
         }
-    };
-    this.use = function(mob){
-        if(mob.doAttack) mob.doAttack(this);
-    };
-    this.damage=function(damage){
-        var health=this.health - damage * 1000/(1000-this.resistance);
-        if(health<=0){
-            this.health=0;
-            remove(monsters,this);
-            if(Math.random()>0.5) coins.push(new Coin(this.x, this.y));
-            log.push(this.name+" is die");
-        }else{
-            this.health=health;
-        }
     }
+}
+
+function HeroBarbarian(x,y){
+    AgressiveMob.call(this,x,y,"BA");
+    this.attackOffset=35;
+    this.normalOffset=5;
+    this.health=this.origin_health=1000;
+    this.belt={items:[], size:10};
+    this.st=16;
+    this.addToBelt=function(potion){
+        for(var i=0;i<this.belt.size;i++){
+            if(typeof this.belt.items[i] == "undefined"){
+                this.belt.items[i]=potion;
+                return true;
+            }
+        }
+        return false;
+    }
+    this.criticalDamage=0.4;
+    this.currentDamage=120;
     this.getDamage=function(){
-        return this.currentDamage * ( Math.random() <= this.criticalDamage  && this == hero ? 4 : 1 );
+        return this.currentDamage * ( Math.random() <= this.criticalDamage ? 4 : 1 );
     }
 }
 
