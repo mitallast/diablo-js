@@ -1,9 +1,12 @@
 (function(undefined) {
 
 var imageCount=0;
-function loadImage(url,angles,steps){
+function loadImage(url,angles,steps,offsetX){
     var i=new Image();
-    i.onload=function(){ imageCount--; }
+    i.onload=function(){
+        imageCount--;
+        i.offsetX=offsetX?((i.width/steps)>>2):0;
+    }
     i.src=url;
     imageCount++;
     if(typeof angles!="undefined" && typeof steps!="undefined"){
@@ -72,25 +75,28 @@ var tileMap={
 };
 var monsterMap={
     SK: {
-        A1: loadImage("monsters/SK/A1/map.png",8,16),
-        NU: loadImage("monsters/SK/NU/map.png",8,8),
-        WL: loadImage("monsters/SK/WL/map.png",8,8),
+        A1: loadImage("monsters/SK/A1/map.png",8,16,true),
+        NU: loadImage("monsters/SK/NU/map.png",8,8,true),
+        WL: loadImage("monsters/SK/WL/map.png",8,8,true),
+        DD: loadImage("monsters/SK/DD/map.png",8,1),
         attackOffset:10,
     },
     FS: {
-        A1: loadImage("monsters/FS/A1/map.png",8,17),
-        NU: loadImage("monsters/FS/NU/map.png",8,12),
-        WL: loadImage("monsters/FS/WL/map.png",8,14),
+        A1: loadImage("monsters/FS/A1/map.png",8,17,true),
+        NU: loadImage("monsters/FS/NU/map.png",8,12,true),
+        WL: loadImage("monsters/FS/WL/map.png",8,14,true),
+        DD: loadImage("monsters/FS/DD/map.png",8,1),
     },
     SI: {
-        A1: loadImage("monsters/SI/A1/map.png",8,16),
-        NU: loadImage("monsters/SI/NU/map.png",8,8),
-        WL: loadImage("monsters/SI/WL/map.png",8,9),
+        A1: loadImage("monsters/SI/A1/map.png",8,16,true),
+        NU: loadImage("monsters/SI/NU/map.png",8,8,true),
+        WL: loadImage("monsters/SI/WL/map.png",8,9,true),
+        DD: loadImage("monsters/SI/DD/map.png",8,1),
     },
     BA: {
-        A1: loadImage("char/barbarian/push.png",16,10),
-        NU: loadImage("char/barbarian/stay.png",16,8),
-        WL: loadImage("char/barbarian/run.png",16,8),
+        A1: loadImage("monsters/BA/A1/map.png",16,9,true),
+        NU: loadImage("monsters/BA/NU/map.png",16,8,true),
+        WL: loadImage("monsters/BA/WL/map.png",16,8,true),
     }
 };
 
@@ -102,8 +108,9 @@ setInterval(function(){
 
 // aggresive mobs
 var monsters=[];
+var deathmobs=[];
 for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SK'));
-monsters.push(new AgressiveMob(50,50,'SK'));
+monsters.push(new AgressiveMob(100,100,'SI'));
 for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'FS'));
 for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SI'));
 
@@ -135,16 +142,10 @@ var coins=[];
 var potions=[];
 for(var i=0;i<33;i++) potions.push(new PotionHealth(randomx(), randomy()));
 var houses=[];
-for(var y in floorMap){ // pre fetch house sprites;
-    for(var x in floorMap[y]){
-        if(floorMap[y][x]=="2"){
-            var h=new House(
-                (parseInt(x)+0.5)*s,
-                (parseInt(y)+0.5)*s);
-            houses.push(h);
-        }
-    }
-}
+for(var y in floorMap) // pre fetch house;
+    for(var x in floorMap[y])
+        if(floorMap[y][x]=="2")
+            houses.push(new House((parseInt(x)+0.5)*s,(parseInt(y)+0.5)*s));
 
 floor.canvas.onclick=function(e) { 
     var mx=e.offsetX - floor.w/2;
@@ -170,24 +171,14 @@ window.onkeydown=function(e){
     }
 }
 
-var lastStep=0;
 setInterval(function() {
     if(imageCount) return;
-    if(lastStep==0){
-        hero.nextStep();
-        lastStep=1;
-    }
-    if(imageCount) return;
-    if(lastStep==1){
-        for(var i in monsters)monsters[i].nextStep();
-        lastStep=2
-    }
-    if(imageCount) return;
+    hero.nextStep();
+    for(var i in monsters) monsters[i].nextStep();
     floor.fillStyle="black";floor.fillRect(0,0, floor.w,floor.h);
     renderFloor();
     renderHeroHealth()
     renderHeroBelt();
-    lastStep=0;
 }, 66);
 
 function renderHeroHealth(){
@@ -231,14 +222,22 @@ function renderHeroBelt(){
     floor.restore();
 }
 
+function loadZb(order,click){
+    var tmp_zb=[], zb=[];
+    var all=[click?[]:houses,monsters,potions,barrels,click?[]:[hero]];
+    for(var t in all) 
+        for(var m in all[t]) 
+            if(all[t][m].isAboveHero()) 
+                tmp_zb.push(all[t][m]);
+    // asc sort
+    tmp_zb.sort(function(a,b){ var c=b.x+b.y-a.x-a.y; return order?c:0-c});
+    var all=[coins,deathmobs,tmp_zb];
+    for(var i in all) for(var j in all[i]) zb.push(all[i][j]);
+    return zb;
+}
+
 function processClick(){
-    var zb=[];
-    for(var m in monsters)  if(monsters[m].isAboveHero())   zb.push(monsters[m]);
-    for(var b in barrels)   if(barrels[b].isAboveHero())    zb.push(barrels[b]);
-    for(var c in coins)     if(coins[c].isAboveHero())      zb.push(coins[c]);
-    for(var c in potions)     if(potions[c].isAboveHero())      zb.push(potions[c]);
-    
-    zb.sort(function(a,b){ return b.x+b.y-a.x-a.y; });// first is asc
+    var zb=loadZb(true,true);
     var cx=(floor.click_x - floor.click_y)*acos,
         cy=(floor.click_x + floor.click_y)/2*asin;
     for(var i in zb){
@@ -258,14 +257,7 @@ function processClick(){
 }
 
 function renderObjects(){
-    var zb=[];// z-buffer
-    zb.push(hero);
-    for(var m in monsters) if(monsters[m].isAboveHero()) zb.push(monsters[m]);
-    for(var b in barrels) if(barrels[b].isAboveHero()) zb.push(barrels[b]);
-    for(var c in coins) if(coins[c].isAboveHero()) zb.push(coins[c]);
-    for(var c in potions) if(potions[c].isAboveHero()) zb.push(potions[c]);
-    for(var h in houses) if(houses[h].isAboveHero()) zb.push(houses[h]);
-    zb.sort(function(b,a){ return b.x+b.y-a.x-a.y; });//first is desc
+    var zb=loadZb(false);
     for(z in zb){
         var m=zb[z];
         floor.save()
@@ -274,12 +266,14 @@ function renderObjects(){
         var tile=m.sprite;
         // render sprite
         if(m.isOverHero && m.isOverHero()) floor.globalAlpha=0.5;
+        var tw = tile.width;
+        var th = tile.height
         if(tile.steps && tile.angles){
-            var tw = tile.width / tile.steps;
-            var th = tile.height / tile.angles;        
+            tw/=tile.steps;
+            th/=tile.angles;
             floor.drawImage(tile, 
                 tw*m.step, th*m.angle, tw, th,
-                Math.round(sx-tw/2), Math.round(sy-th), tw, th);
+                Math.round(sx-tw/2-tile.offsetX), Math.round(sy-th), tw, th);
         }else{
             floor.drawImage(tile, Math.round(sx-tile.width/2), Math.round(sy-tile.height));            
         }
@@ -288,12 +282,7 @@ function renderObjects(){
         if(m.health && m.origin_health && m != hero){
             floor.save()
             floor.globalAlpha=0.7
-            if(m.sprite.steps){
-                sy-=tile.height/tile.steps;
-            }else{
-                sy-=m.sprite.height;
-            }
-            sy+=20;
+            sy-=90;
             var lm=Math.floor(m.origin_health/20),
                 lr=Math.floor(m.health/20)
             floor.fillStyle="black"
@@ -335,8 +324,7 @@ function renderFloor() {
     floor.restore();
 }
 
-function getFloorTile(x, y)
-{
+function getFloorTile(x, y) {
     var f = floorMap[y][x];
     switch(f){
         case "2":
@@ -354,8 +342,7 @@ function getFloorTile(x, y)
     }
 }
 
-function isWayFloor(x, y)
-{
+function isWayFloor(x, y) {
     return floorMap[y] ? floorMap[y][x] == "1" : false;
 }
 
@@ -378,10 +365,20 @@ function Shape(sprite,x,y){
     this.sprite=sprite;
     this.isAboveHero=function(){
         var maxlen=tw*1.5;
-        if(Math.abs(this.x-hero.x)>maxlen) return false;
-        if(Math.abs(this.y-hero.y)>maxlen) return false;
-        return true;
+        return (Math.abs(this.x-hero.x)<=maxlen) && (Math.abs(this.y-hero.y)<=maxlen);
     };
+}
+
+function DeathMob(mob){
+    Shape.call(this,mob.death,mob.x,mob.y);
+    this.step=0;
+    this.angle=mob.angle;
+    this.used=false;
+    this.use=function(mob){
+        if(!this.used && Math.random()>0.5) coins.push(new Coin(this.x+50, this.y+50));
+        if(!this.used && Math.random()>0.5) potions.push(new PotionHealth(this.x+50, this.y));
+        this.used=true;
+    }
 }
 
 function House(x,y){
@@ -406,7 +403,7 @@ function Barrel(x, y){
     };
     this.damage=function(damage){
         remove(barrels,this);
-        if(Math.random()>0.7)coins.push(new Coin(this.x, this.y));
+        if(Math.random()>0.7) coins.push(new Coin(this.x, this.y));
     };
 }
 
@@ -424,9 +421,7 @@ function Potion(x,y){
     this.sprite.steps=6;
     this.sprite.angles=4;
     this.use=function(mob){
-        if(mob.addToBelt(this)){
-            remove(potions,this);
-        }
+        if(mob.addToBelt(this)) remove(potions,this);
     }
 }
 
@@ -444,6 +439,7 @@ function Mob(x,y,name){
     this.name=name;
     this.stay=monsterMap[name].NU
     this.run=monsterMap[name].WL
+    this.death=monsterMap[name].DD
     this.currentState=this.stay;
     this.step=0;
     this.angle=0;
@@ -476,7 +472,6 @@ function Mob(x,y,name){
         if(isStep(x+sx,y+sy)){run=true;}
         else if(isStep(this.x,y+sy)){run=true;sx=0;}
         else if(isStep(x+sx,this.y)){run=true;sy=0;}
-        
         if(Math.sqrt((sx*sx)+(sy*sy))>5){
             x += sx;
             y += sy;
@@ -502,7 +497,7 @@ function Mob(x,y,name){
         if(health<=0){
             this.health=0;
             remove(monsters,this);
-            if(Math.random()>0.5) coins.push(new Coin(this.x, this.y));
+            if(this.death) deathmobs.push(new DeathMob(this));
         }else{
             this.health=health;
         }
