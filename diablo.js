@@ -5,7 +5,7 @@ function loadImage(url,angles,steps,offsetX){
     var i=new Image();
     i.onload=function(){
         imageCount--;
-        i.offsetX=offsetX?((i.width/steps)>>2):0;
+        i.offsetX=offsetX?((i.height/angles)>>2):0;
     }
     i.src=url;
     imageCount++;
