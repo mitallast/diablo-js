@@ -48,20 +48,11 @@ public class DsInfo {
     int tag_num =0;
     int shadow_num =1;
 
-    int floor_line;
-    int shadow_line;
-    int tag_line;
-    int wall_line;
-
-    int floor_len;
-    int shadow_len;
-    int tag_len;
-    int wall_len;
-
-    DsLayerInfo[] floor_buff;
-    DsLayerInfo[] shadow_buff;
-    DsLayerInfo[] tag_buff;
-    DsLayerInfo[] wall_buff;
+    // {layer num, x, y}
+    DsLayerInfo[][][] wall_buff;
+    DsLayerInfo[][][] floor_buff;
+    DsLayerInfo[][][] tag_buff;
+    DsLayerInfo[][][] shadow_buff;
 
     int obj_num;
     ObjectInfo[] obj;

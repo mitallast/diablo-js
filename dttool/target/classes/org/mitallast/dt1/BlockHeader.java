@@ -1,6 +1,7 @@
 package org.mitallast.dt1;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  # bytes name            description
@@ -31,27 +32,31 @@ public class BlockHeader {
 
     public static final int BYTE_COUNT = 4+2+1+1+4+4+4+4+4+4+4+1+1+1+1+25+7+4+4+4+12;
 
-    private int    direction;
-    private short  roof_y;
-    private byte   sound;
-    private byte   animated;
-    private int    size_y;
-    private int    size_x;
-    private int    zeros1;
-    private int    orientation;
-    private int    main_index;
-    private int    sub_index;
-    private int    frame;
-    private byte   unknown_a;
-    private byte   unknown_b;
-    private byte   unknown_c;
-    private byte   unknown_d;
-    private byte[] floor_flags=new byte[25];
-    private byte[] zeros2=new byte[7];
-    private int    data_pointer;
-    private int    length;
-    private int    sub_block;
-    private byte[] zeros3=new byte[12];
+    public int offset;
+
+    public int    direction;
+    public short  roof_y;
+    public byte   sound;
+    public byte   animated;
+    public int    size_y;
+    public int    size_x;
+    public int    zeros1;
+    public int    orientation;
+    public int    main_index;
+    public int    sub_index;
+    public int    frame;
+    public byte   unknown_a;
+    public byte   unknown_b;
+    public byte   unknown_c;
+    public byte   unknown_d;
+    public byte[] floor_flags=new byte[25];
+    public byte[] zeros2=new byte[7];
+    public int    data_pointer;
+    public int    length;
+    public int    sub_block;
+    public byte[] zeros3=new byte[12];
+
+    public List<SubBlockHeader> subBlockHeaderList;
 
     public void fromByteBuffer(ByteBuffer buffer){
         direction = buffer.getInt();
@@ -249,17 +254,18 @@ public class BlockHeader {
     @Override
     public String toString() {
         return "BlockHeader{" +
-                "direction=" + direction +
+                "orientation=" + orientation +
+                ", main_index=" + main_index +
+                ", sub_index=" + sub_index +
+                ", frame=" + frame +
                 ", roof_y=" + roof_y +
+                ", sub_block=" + sub_block +
+                ", direction=" + direction +
                 ", sound=" + sound +
                 ", animated=" + animated +
                 ", size_y=" + size_y +
                 ", size_x=" + size_x +
                 ", zeros1=" + zeros1 +
-                ", orientation=" + orientation +
-                ", main_index=" + main_index +
-                ", sub_index=" + sub_index +
-                ", frame=" + frame +
                 ", unknown_a=" + unknown_a +
                 ", unknown_b=" + unknown_b +
                 ", unknown_c=" + unknown_c +
@@ -268,7 +274,6 @@ public class BlockHeader {
                 ", zeros2=" + zeros2 +
                 ", data_pointer=" + data_pointer +
                 ", length=" + length +
-                ", sub_block=" + sub_block +
                 ", zeros3=" + zeros3 +
                 '}';
     }

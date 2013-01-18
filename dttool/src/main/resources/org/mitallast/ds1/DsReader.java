@@ -7,16 +7,24 @@ import java.nio.ByteOrder;
 
 public class DsReader {
 
-    public static final int FLOOR_MAX_LAYER=2;
-    public static final int SHADOW_MAX_LAYER=1;
-    public static final int TAG_MAX_LAYER=1;
-    public static final int WALL_MAX_LAYER=4;
+//    public static final int FLOOR_MAX_LAYER=2;
+//    public static final int SHADOW_MAX_LAYER=1;
+//    public static final int TAG_MAX_LAYER=1;
+//    public static final int WALL_MAX_LAYER=4;
 
     public static void main(String... args) throws IOException {
-        read(new RandomAccessFile("tiles/ACT1/TOWN/townE1.ds1", "r"));
+        DsInfo dsInfo = read(new RandomAccessFile("tiles/ACT1/BARRACKS/barE.ds1", "r"));
+        for(DsLayerInfo[][] dsLayerInfo: dsInfo.wall_buff){
+            for (DsLayerInfo[] layerInfoList: dsLayerInfo){
+                for(DsLayerInfo layerInfo: layerInfoList){
+                    System.out.println(layerInfo);
+                }
+            }
+            break;
+        }
     }
 
-    public static void read(RandomAccessFile in) throws IOException {
+    public static DsInfo read(RandomAccessFile in) throws IOException {
 
         byte [] dir_lookup = new byte[]{
             0x00, 0x01, 0x02, 0x01, 0x02, 0x03, 0x03, 0x05, 0x05, 0x06,
@@ -24,14 +32,13 @@ public class DsReader {
                     0x0F, 0x10, 0x11, 0x12, 0x14};
 
         in.seek(0);
-//        ByteBuffer buffer = ByteBuffer.allocate((int) in.length());
         FileByteBuffer buffer = new FileByteBuffer(in);
 
         DsInfo info = new DsInfo();
 
         info.version = buffer.getInt();
-        info.width = buffer.getInt();
-        info.height = buffer.getInt();
+        info.width = buffer.getInt() + 1;
+        info.height = buffer.getInt() + 1;
         if (info.version >= 8) {
             info.act = buffer.getInt() + 1;
         } else {
@@ -115,60 +122,49 @@ public class DsReader {
 
         System.out.printf("layers : (2 * %d walls) + %d floors + %d shadow + %d tag\n", info.wall_num, info.floor_num, info.shadow_num, info.tag_num);
 
-//        int MAX_LAYER = (info.wall_num * 2) + info.floor_num + info.shadow_num + info.tag_num;
-
-        // read tiles of layers
-
-        // floor buffer
-        info.floor_line     = info.width * info.floor_num;
-        info.floor_len      = info.floor_line * info.height;
-        info.floor_buff     = new DsLayerInfo[info.floor_len];
-        for (int i=0;i<info.floor_len;i++){
-            info.floor_buff[i]=new DsLayerInfo();
+        int MAX_LAYER = ( 2 * info.wall_num) + info.floor_num + info.shadow_num + info.tag_num;
+//        info.layerInfo=new DsLayerInfo[MAX_LAYER][info.width][info.height];
+//        for(int n=0;n<MAX_LAYER;n++){
+//            for(int x=0;x<info.width;x++){
+//                for (int y=0;y<info.height;y++){
+//                    info.layerInfo[n][x][y]=new DsLayerInfo();
+//                }
+//            }
+//        }
+        info.wall_buff=new DsLayerInfo[info.wall_num][info.width][info.height];
+        for(int n=0;n<info.wall_num;n++){
+            for(int x=0;x<info.width;x++){
+                for (int y=0;y<info.height;y++){
+                    info.wall_buff[n][x][y]=new DsLayerInfo();
+                }
+            }
         }
-
-        // shadow buffer
-        info.shadow_line     = info.width * info.shadow_num;
-        info.shadow_len      = info.shadow_line * info.height;
-        info.shadow_buff     = new DsLayerInfo[info.shadow_len];
-        for (int i=0;i<info.shadow_len;i++){
-            info.shadow_buff[i]=new DsLayerInfo();
+        info.floor_buff=new DsLayerInfo[info.floor_num][info.width][info.height];
+        for(int n=0;n<info.floor_num;n++){
+            for(int x=0;x<info.width;x++){
+                for (int y=0;y<info.height;y++){
+                    info.floor_buff[n][x][y]=new DsLayerInfo();
+                }
+            }
         }
-
-        // tag buffer
-        info.tag_line     = info.width * info.tag_num;
-        info.tag_len      = info.tag_line * info.height;
-        info.tag_buff     = new DsLayerInfo[info.tag_len];
-        for (int i=0;i<info.tag_len;i++){
-            info.tag_buff[i]=new DsLayerInfo();
+        info.shadow_buff=new DsLayerInfo[info.shadow_num][info.width][info.height];
+        for(int n=0;n<info.shadow_num;n++){
+            for(int x=0;x<info.width;x++){
+                for (int y=0;y<info.height;y++){
+                    info.shadow_buff[n][x][y]=new DsLayerInfo();
+                }
+            }
         }
-
-        // wall buffer
-        info.wall_line     = info.width * info.wall_num;
-        info.wall_len      = info.wall_line * info.height;
-        info.wall_buff     = new DsLayerInfo[info.wall_len];
-        for (int i=0;i<info.wall_len;i++){
-            info.wall_buff[i]=new DsLayerInfo();
+        info.tag_buff=new DsLayerInfo[info.tag_num][info.width][info.height];
+        for(int n=0;n<info.tag_num;n++){
+            for(int x=0;x<info.width;x++){
+                for (int y=0;y<info.height;y++){
+                    info.shadow_buff[n][x][y]=new DsLayerInfo();
+                }
+            }
         }
-
-        int[] f_ptr=new int[FLOOR_MAX_LAYER];
-        int[] s_ptr=new int[SHADOW_MAX_LAYER];
-        int[] t_ptr=new int[TAG_MAX_LAYER];
-        int[] w_ptr=new int[WALL_MAX_LAYER];
-        int[] o_ptr=new int[WALL_MAX_LAYER];
 
         // set pointers
-        for (int x=0; x<FLOOR_MAX_LAYER; x++)
-            f_ptr[x] = x;
-
-        for (int x=0; x<SHADOW_MAX_LAYER; x++)
-            s_ptr[x] = x;
-
-        for (int x=0; x<TAG_MAX_LAYER; x++)
-            t_ptr[x] = x;
-
-        for (int x=0; x<WALL_MAX_LAYER; x++)
-            o_ptr[x] = w_ptr[x] = x;
 
         int p;
         for (int n=0; n < nb_layer; n++)
@@ -177,7 +173,6 @@ public class DsReader {
             {
                 for (int x=0; x < info.width; x++)
                 {
-                    System.out.printf("n:%d y:%d x:%d ", n, y, x);
                     switch (lay_stream[n])
                     {
                         // walls
@@ -186,14 +181,11 @@ public class DsReader {
                         case  3:
                         case  4:
                             p = lay_stream[n] - 1;
-                            info.wall_buff[w_ptr[p]].prop1 = buffer.get();
-                            info.wall_buff[w_ptr[p]].prop2 = buffer.get();
-                            info.wall_buff[w_ptr[p]].prop3 = buffer.get();
-                            info.wall_buff[w_ptr[p]].prop4 = buffer.get();
-                            System.out.println(info.wall_buff[w_ptr[p]]);
-                            w_ptr[p] += info.wall_num;
+                            info.wall_buff[p][x][y].prop1 = buffer.get();
+                            info.wall_buff[p][x][y].prop2 = buffer.get();
+                            info.wall_buff[p][x][y].prop3 = buffer.get();
+                            info.wall_buff[p][x][y].prop4 = buffer.get();
                             break;
-
                         // orientations
                         case  5:
                         case  6:
@@ -201,41 +193,33 @@ public class DsReader {
                         case  8:
                             p = lay_stream[n] - 5;
                             if (info.version < 7)
-                                info.wall_buff[o_ptr[p]].orientation = dir_lookup[buffer.get()&0xFF];
+                                info.wall_buff[p][x][y].orientation = dir_lookup[buffer.get()&0xFF];
                             else{
-                                info.wall_buff[o_ptr[p]].orientation = buffer.get();
+                                info.wall_buff[p][x][y].orientation = buffer.get();
                             }
-                            System.out.println(info.wall_buff[o_ptr[p]]);
-                            o_ptr[p] += info.wall_num;
+                            buffer.get(new byte[3]);
                             break;
                         // floors
                         case  9:
                         case 10:
                             p = lay_stream[n] - 9;
-                            info.floor_buff[f_ptr[p]].prop1 = buffer.get();
-                            info.floor_buff[f_ptr[p]].prop2 = buffer.get();
-                            info.floor_buff[f_ptr[p]].prop3 = buffer.get();
-                            info.floor_buff[f_ptr[p]].prop4 = buffer.get();
-                            System.out.println(info.floor_buff[f_ptr[p]]);
-                            f_ptr[p] += info.floor_num;
+                            info.floor_buff[p][x][y].prop1 = buffer.get();
+                            info.floor_buff[p][x][y].prop2 = buffer.get();
+                            info.floor_buff[p][x][y].prop3 = buffer.get();
+                            info.floor_buff[p][x][y].prop4 = buffer.get();
                             break;
                         // shadow
                         case 11:
                             p = lay_stream[n] - 11;
-                            info.shadow_buff[s_ptr[p]].prop1 = buffer.get();
-                            info.shadow_buff[s_ptr[p]].prop2 = buffer.get();
-                            info.shadow_buff[s_ptr[p]].prop3 = buffer.get();
-                            info.shadow_buff[s_ptr[p]].prop4 = buffer.get();
-                            System.out.println(info.shadow_buff[s_ptr[p]]);
-                            s_ptr[p] += info.shadow_num;
+                            info.shadow_buff[p][x][y].prop1 = buffer.get();
+                            info.shadow_buff[p][x][y].prop2 = buffer.get();
+                            info.shadow_buff[p][x][y].prop3 = buffer.get();
+                            info.shadow_buff[p][x][y].prop4 = buffer.get();
                             break;
-
                         // tag
                         case 12:
                             p = lay_stream[n] - 12;
-                            info.tag_buff[t_ptr[p]].num = buffer.get();
-                            System.out.println(info.tag_buff[t_ptr[p]]);
-                            t_ptr[p] += info.tag_num;
+                            info.tag_buff[p][x][y].num = buffer.get();
                             buffer.get(new byte[3]);
                             break;
                     }
@@ -248,7 +232,7 @@ public class DsReader {
         if (info.version >= 2)
         {
             info.obj_num = buffer.getInt();
-            System.out.println("objects: "+info.obj_num);
+            //System.out.println("objects: "+info.obj_num);
 
             info.obj=new ObjectInfo[info.obj_num];
             for(int i=0;i<info.obj_num;i++){
@@ -305,7 +289,7 @@ public class DsReader {
             }
 
             int n = info.group_num = buffer.getInt();
-            System.out.println("Groups: "+n);
+            //System.out.println("Groups: "+n);
 
             // malloc
             info.group = new GroupInfo[info.group_num];
@@ -323,15 +307,15 @@ public class DsReader {
                 {
                     info.group[x].unk = buffer.getInt();
                 }
-                System.out.println(info.group[x]);
             }
         }
 
+        boolean obj_path_warn_wrote=false;
         // now we're on the npc's paths datas
         if (info.version >= 14)
         {
             int npc = buffer.getInt();
-            System.out.println("Npc: "+npc);
+            //System.out.println("Npc: "+npc);
             for (int n=0; n<npc; n++)
             {
                 int path = buffer.getInt();
@@ -364,16 +348,13 @@ public class DsReader {
                     // there are a least 2 objects at the same coordinates
 
                     // put a warning
-                    if (obj_path_warn_wrote != true)
+                    if (!obj_path_warn_wrote)
                     {
-                        obj_path_warn_wrote = TRUE;
-                        printf("\n"
-                                "ds1_read() : WARNING, there are at least 2 objects at the same coordinates for some paths datas.\n"
-                        );
+                        obj_path_warn_wrote = true;
+                        System.out.println("WARNING, there are at least 2 objects at the same coordinates for some paths datas");
                     }
-                    printf("   * Removing %i paths points of 1 object at coordinates (%i, %i)\n",
-                            path, x, y);
-                    fflush(stdout);
+                    System.out.printf("Removing %d paths points of 1 object at coordinates (%d, %d)\n", path, x, y);
+
 
                     // first, delete already assigned paths
                     for (o=0; o < info.obj_num; o++)
@@ -396,12 +377,12 @@ public class DsReader {
                     if (info.version >= 15)
                     {
                         for (p=0; p < path; p++)
-                            ptr += 3; // skip 3 dwords per path
+                            buffer.get(new byte[3]);
                     }
                     else
                     {
                         for (p=0; p < path; p++)
-                            ptr += 2; // skip 2 dwords only per path, no 'action'
+                            buffer.get(new byte[2]);
                     }
                 }
                 else
@@ -418,38 +399,26 @@ public class DsReader {
                         if (info.version >= 15)
                         {
                             for (p=0; p < path; p++)
-                                ptr += 3; // skip 3 dwords per path
+                                buffer.get(new byte[3]);
                         }
                         else
                         {
                             for (p=0; p < path; p++)
-                                ptr += 2; // skip 2 dwords only per path, no 'action'
+                                buffer.get(new byte[2]);
                         }
                     }
                     else
                     {
                         // yep, valid object
-
-                        if (path > WINDS1EDIT_PATH_MAX)
-                        {
-                            free(ds1_buff);
-                            sprintf(tmp, "object %li have too much paths (%i), editor max is %i\n",
-                                    o, path, WINDS1EDIT_PATH_MAX);
-                            ds1edit_error(tmp);
-                        }
-
                         // all ok for assigning the paths to this object
                         info.obj[o].path_num = path;
                         for (p=0; p < path; p++)
                         {
-                            info.obj[o].path[p].x = * ptr;
-                            ptr++;
-                            info.obj[o].path[p].y = * ptr;
-                            ptr++;
+                            info.obj[o].path[p].x = buffer.getInt();
+                            info.obj[o].path[p].y = buffer.getInt();
                             if (info.version >= 15)
                             {
-                                info.obj[o].path[p].action = * ptr;
-                                ptr++;
+                                info.obj[o].path[p].action = buffer.getInt();
                             }
                             else
                                 info.obj[o].path[p].action = 1; // default action
@@ -457,10 +426,8 @@ public class DsReader {
                     }
                 }
             }
-            editobj_make_obj_label(ds1_idx);
         }
-
-        System.out.println(info);
+        return info;
     }
 
     private static class FileByteBuffer{
@@ -489,7 +456,8 @@ public class DsReader {
         }
     }
 
-    private static final CharSequence charSequence = new CharSequence() {
+    private static final CharSequence charSequence = new CharSequence()
+    {
         private final char[] charSequence = new char[256];
 
         {

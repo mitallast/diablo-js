@@ -8,45 +8,74 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 public class Extract {
     static {
         System.setProperty("java.awt.headless", "true");
     }
     public static void main(String... args){
+        String[] fileNames = new String[]{
+            "tiles/ACT1/BARRACKS/basewall.dt1",
+            "tiles/ACT1/BARRACKS/floor.dt1",
+//            "tiles/ACT1/BARRACKS/objects.dt1",
+        };
+        int i=0;
+        for(String fileName: fileNames){
+            extract(fileName, String.valueOf(i++));
+        }
+    }
+
+    public static void extract(String fileName, String dir){
         try {
-            DtReader reader = new DtReader(new RandomAccessFile("tiles/ACT1/TOWN/Floor.dt1", "r"));
+            new File("output/" + dir).mkdir();
+            DtReader reader = new DtReader(new RandomAccessFile(fileName, "r"));
             int[] palette = PaletteReader.getPalette(
                     new RandomAccessFile("palette/ACT1/pal.dat", "r"),
                     new RandomAccessFile("palette/gamma.dat", "r")
             );
             FileHeader fileHeader = reader.getFileHeader();
-            System.out.println(fileHeader);
+            fileHeader.blockHeaderList = new ArrayList<BlockHeader>();
+            //System.out.println(fileHeader);
             // load block header
             int block_ptr = fileHeader.getBh_ptr();
             for (int nb_block=0;nb_block<fileHeader.getNb_block();nb_block++)
             {
                 BlockHeader blockHeader = reader.getBlockHeader(block_ptr);
+                blockHeader.subBlockHeaderList = new ArrayList<SubBlockHeader>();
+                fileHeader.blockHeaderList.add(blockHeader);
                 System.out.println(blockHeader);
                 // load sub block
                 int sub_ptr=blockHeader.getData_pointer();
                 BufferedImage bufferedImage = new BufferedImage(blockHeader.getSize_x(), blockHeader.getSize_y(), BufferedImage.TYPE_INT_ARGB);
                 for(int sub=0;sub<blockHeader.getSub_block();sub++){
                     SubBlockHeader subBlockHeader = reader.getSubBlockHeader(sub_ptr);
-                    System.out.println(subBlockHeader);
+                    blockHeader.subBlockHeaderList.add(subBlockHeader);
+                    //System.out.println(subBlockHeader);
                     // load tiles
                     int tile_ptr = blockHeader.getData_pointer()+subBlockHeader.getData_offset();
                     byte[] tile = reader.getTile(tile_ptr, subBlockHeader.getSub_length());
-                    draw_sub_tile_isometric(
+                    if(subBlockHeader.getTile_format()==1){
+                        draw_sub_tile_isometric(
+                                bufferedImage,
+                                subBlockHeader.getX_pos(),
+                                subBlockHeader.getY_pos(),
+                                tile,
+                                palette
+                        );
+                    }else{
+                        draw_sub_tile_normal(
                             bufferedImage,
                             subBlockHeader.getX_pos(),
                             subBlockHeader.getY_pos(),
                             tile,
                             palette
-                    );
+                        );
+                    }
                     sub_ptr+=SubBlockHeader.BYTE_COUNT;
                 }
-                ImageIO.write(bufferedImage, "png", new File("output/" + block_ptr + ".png"));
+                File file = new File("output/" + dir +"/"+block_ptr + ".png");
+                ImageIO.write(bufferedImage, "png", file);
                 block_ptr+=BlockHeader.BYTE_COUNT;
             }
         } catch (FileNotFoundException e) {
@@ -54,6 +83,49 @@ public class Extract {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static FileHeader read(RandomAccessFile dtFile, RandomAccessFile palFile) throws IOException {
+        DtReader reader = new DtReader(dtFile);
+//        int[] palette = PaletteReader.getPalette(
+//                palFile,
+//                new RandomAccessFile("palette/gamma.dat", "r")
+//        );
+        FileHeader fileHeader = reader.getFileHeader();
+        fileHeader.blockHeaderList = new ArrayList<BlockHeader>();
+        //System.out.println(fileHeader);
+        // load block header
+        int block_ptr = fileHeader.getBh_ptr();
+        for (int nb_block=0;nb_block<fileHeader.getNb_block();nb_block++)
+        {
+            BlockHeader blockHeader = reader.getBlockHeader(block_ptr);
+            blockHeader.offset = block_ptr;
+            blockHeader.subBlockHeaderList = new ArrayList<SubBlockHeader>();
+            fileHeader.blockHeaderList.add(blockHeader);
+            //System.out.println(blockHeader);
+            // load sub block
+            int sub_ptr=blockHeader.getData_pointer();
+//            BufferedImage bufferedImage = new BufferedImage(blockHeader.getSize_x(), blockHeader.getSize_y(), BufferedImage.TYPE_INT_ARGB);
+            for(int sub=0;sub<blockHeader.getSub_block();sub++){
+                SubBlockHeader subBlockHeader = reader.getSubBlockHeader(sub_ptr);
+                blockHeader.subBlockHeaderList.add(subBlockHeader);
+                //System.out.println(subBlockHeader);
+                // load tiles
+//                int tile_ptr = blockHeader.getData_pointer()+subBlockHeader.getData_offset();
+//                byte[] tile = reader.getTile(tile_ptr, subBlockHeader.getSub_length());
+//                draw_sub_tile_isometric(
+//                        bufferedImage,
+//                        subBlockHeader.getX_pos(),
+//                        subBlockHeader.getY_pos(),
+//                        tile,
+//                        palette
+//                );
+                sub_ptr+=SubBlockHeader.BYTE_COUNT;
+            }
+//            ImageIO.write(bufferedImage, "png", new File("output/" + block_ptr + ".png"));
+            block_ptr+=BlockHeader.BYTE_COUNT;
+        }
+        return fileHeader;
     }
 
     public static void draw_sub_tile_isometric(BufferedImage dst, int xo, int yo, byte[] data, int[] palette)
@@ -87,28 +159,39 @@ public class Extract {
         }
     }
 
-    public static void draw_sub_tile_normal(BufferedImage dst, int x0, int y0, byte[] data)
+    public static void draw_sub_tile_normal (BufferedImage dst, int x0, int y0, byte[] data, int[] palette)
     {
-        byte b1, b2;
+//        int ptr=0;
+//        for(int x=0;x<32;x++){
+//            for(int y=0;y<32;y++){
+//                int colorIndex = data[ptr] & 0xFF;
+//                int color = palette[colorIndex];
+//                dst.setRGB(x0 + x, y0 + y, color);
+//                ptr++;
+//            }
+//        }
+        int ptr = 0, b1, b2;
         int   x=0, y=0;
-
-        int dataPtr=0;
         int length = data.length;
+
+
         // draw
         while (length > 0)
         {
-            b1 = data[dataPtr];
-            b2 = data[dataPtr+1];
-            dataPtr += 2;
+            b1 = data[ptr];
+            b2 = data[ptr + 1];
+            ptr += 2;
             length -= 2;
-            if (b1 != 0 || b2 != 0)
+            if (b1!=0 || b2!=0)
             {
                 x += b1;
                 length -= b2;
-                while (b2>0)
+                while (b2!=0)
                 {
-                    dst.setRGB(x0+x, y0+y, data[dataPtr]);
-                    dataPtr++;
+                    int colorIndex = data[ptr] & 0xFF;
+                    int color = palette[colorIndex];
+                    dst.setRGB(x0 + x, y0 + y, color);
+                    ptr++;
                     x++;
                     b2--;
                 }

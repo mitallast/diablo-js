@@ -19,8 +19,8 @@ public class SubBlockHeader {
 
     public static final int BYTE_COUNT = 2+2+2+1+1+2+4+2+4;
 
-    private short x_pos;
-    private short y_pos;
+    private int x_pos;
+    private int y_pos;
     private short zeros1;
     private byte grid_x;
     private byte grid_y;
@@ -30,8 +30,8 @@ public class SubBlockHeader {
     private int data_offset;
 
     public void fromByteBuffer(ByteBuffer buffer){
-        x_pos = buffer.getShort();
-        y_pos = buffer.getShort();
+        x_pos = buffer.getShort() & 0xFF;
+        y_pos = buffer.getShort() & 0xFF;
         zeros1 = buffer.getShort();
         grid_x = buffer.get();
         grid_y = buffer.get();
@@ -41,7 +41,7 @@ public class SubBlockHeader {
         data_offset = buffer.getInt();
     }
 
-    public short getX_pos() {
+    public int getX_pos() {
         return x_pos;
     }
 
@@ -49,7 +49,7 @@ public class SubBlockHeader {
         this.x_pos = x_pos;
     }
 
-    public short getY_pos() {
+    public int getY_pos() {
         return y_pos;
     }
 

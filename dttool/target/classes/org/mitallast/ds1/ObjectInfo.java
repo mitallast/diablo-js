@@ -15,14 +15,17 @@ package org.mitallast.ds1;
  + 1C  dword  NEXT_PTR  : pointer to next OBJECT in the linked list, NULL if none
  */
 public class ObjectInfo {
+
+    public static final int WINDS1EDIT_PATH_MAX = 100;
+
     int        type;
     int        id;
     int        x;     // sub-cell X
     int        y;     // sub-cell Y
     int        ds1_flags;
 
-    //PATH_S      path[WINDS1EDIT_PATH_MAX];
     int        path_num;
+    PathInfo[] path = new PathInfo[WINDS1EDIT_PATH_MAX];
     int         desc_idx;
     int         flags;
     //OBJ_LABEL_S label;

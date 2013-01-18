@@ -1,6 +1,7 @@
 package org.mitallast.dt1;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  # bytes name            description
@@ -20,6 +21,8 @@ public class FileHeader {
     private byte[] zeros1=new byte[260];
     private int nb_block;
     private int bh_ptr;
+
+    public List<BlockHeader> blockHeaderList;
 
     public void fromByteBuffer(ByteBuffer buffer){
         x1 = buffer.getInt();

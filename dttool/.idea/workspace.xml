@@ -2,55 +2,222 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/BlockHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsLayerInfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsReader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/DtReader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/Extract.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/FileHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/GroupInfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/ObjectInfo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/pallete/PaletteReader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/SimpleReader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/SubBlockHeader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/palette/gamma.dat" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt.tif" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0000.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0001.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0010.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0011.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0100.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0101.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0110.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt0111.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1000.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1001.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1010.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1011.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1100.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1101.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1110.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/dirt1111.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../dirt/gray.png" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/FloorRender.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/PathInfo.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10068.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10164.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10260.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10356.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1044.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10452.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10548.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10644.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10740.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10836.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/10932.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11028.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11124.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11220.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11316.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1140.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11412.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11508.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11604.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11700.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11796.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11892.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/11988.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12084.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12180.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12276.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1236.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12372.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12468.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12564.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12660.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12756.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12852.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/12948.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13044.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13140.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13236.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1332.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13332.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13428.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13524.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13620.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13716.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13812.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/13908.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/14004.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1428.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1524.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1620.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1716.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1812.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/1908.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2004.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2100.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2196.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2292.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2388.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2484.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2580.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2676.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/276.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2772.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2868.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/2964.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3060.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3156.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3252.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3348.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3444.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3540.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3636.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/372.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3732.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3828.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/3924.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4020.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4116.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4212.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4308.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4404.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4500.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4596.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/468.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4692.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4788.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4884.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/4980.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5076.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5172.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5268.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5364.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5460.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5556.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/564.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5652.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5748.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5844.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/5940.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6036.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6132.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6228.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6324.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6420.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6516.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/660.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6612.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6708.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6804.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6900.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/6996.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7092.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7188.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7284.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7380.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7476.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/756.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7572.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7668.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7764.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7860.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/7956.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8052.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8148.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8244.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8340.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8436.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/852.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8532.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8628.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8724.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8820.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/8916.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9012.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9108.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9204.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9300.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9396.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/948.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9492.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9588.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9684.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9780.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9876.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output/9972.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barE.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barE2.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barE3.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barE4.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEW.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEW2.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEW3.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEW4.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEWtheme1.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEforge.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEtheme1.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barEwarp.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barN.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barN2.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barN3.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barN4.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNE.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNE2.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNE3.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNE4.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNEW.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNEW2.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNEW3.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNEW4.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNEWtheme1.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNEtheme1.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNS.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNS2.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNS3.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNS4.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNSE.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNSE2.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNSE3.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNSE4.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/BARRACKS/barNforge.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/Outdoors/Bridge.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/Outdoors/Objects.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/Outdoors/River.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/Outdoors/TreeGroups.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/Outdoors/stonewall.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/TOWN/Fence.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/TOWN/Floor.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/TOWN/Objects.dt1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/TOWN/townE1.ds1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tiles/ACT1/TOWN/trees.dt1" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/BlockHeader.java" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/BlockHeader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsReader.java" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsReader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/Extract.java" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/Extract.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/FileHeader.java" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/FileHeader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/ObjectInfo.java" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/ObjectInfo.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/SubBlockHeader.java" afterPath="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/SubBlockHeader.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../diablo.js" afterPath="$PROJECT_DIR$/../diablo.js" />
     </list>
     <ignored path="dttool.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357816131863" ignored="false" />
+    <file path="/Dummy.txt" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358495259722" ignored="false" />
     <file path="/Header.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357329047867" ignored="false" />
-    <file path="/BlockHeader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357550831191" ignored="false" />
-    <file path="/SubBlockHeader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357388754591" ignored="false" />
+    <file path="/BlockHeader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357933076310" ignored="false" />
+    <file path="/SubBlockHeader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358112343995" ignored="false" />
     <file path="/FileReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357331062145" ignored="false" />
     <file path="/DtReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357559185879" ignored="false" />
-    <file path="/FileHeader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357328687044" ignored="false" />
-    <file path="/Extract.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357559252512" ignored="false" />
+    <file path="/FileHeader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357918161064" ignored="false" />
+    <file path="/Extract.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358141092926" ignored="false" />
     <file path="/a.dummy" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357559152074" ignored="false" />
     <file path="/PalleteReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357388124311" ignored="false" />
     <file path="/PaletteReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357558683084" ignored="false" />
     <file path="/TileData.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357390475815" ignored="false" />
     <file path="/PcxType.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357550859094" ignored="false" />
-    <file path="/DsReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357906427410" ignored="false" />
+    <file path="/DsReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358146077162" ignored="false" />
     <file path="/DsHeader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357577092237" ignored="false" />
     <file path="/Constant.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357577672433" ignored="false" />
     <file path="/GC_ENUM.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357577972234" ignored="false" />
@@ -58,19 +225,21 @@
     <file path="/CONFIG_S.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357578061862" ignored="false" />
     <file path="/BUT_STATE_E.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357578105816" ignored="false" />
     <file path="/BUT_TYP_E.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357578217538" ignored="false" />
-    <file path="/DsInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357905596863" ignored="false" />
-    <file path="/ObjectInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357902760313" ignored="false" />
-    <file path="/SimpleReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357903058355" ignored="false" />
-    <file path="/DsLayerInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357893159986" ignored="false" />
-    <file path="/fragment.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357903019104" ignored="false" />
+    <file path="/DsInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358145530088" ignored="false" />
+    <file path="/ObjectInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357915529683" ignored="false" />
+    <file path="/SimpleReader.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358094336997" ignored="false" />
+    <file path="/DsLayerInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358108432184" ignored="false" />
+    <file path="/fragment.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358093058400" ignored="false" />
     <file path="/GroupInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357905920004" ignored="false" />
+    <file path="/PathInfo.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1357915337755" ignored="false" />
+    <file path="/FloorRender.java" changelist="55e4631a-13c5-4c2a-8cbc-c73d2a40fef8" time="1358497342357" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="ChangesViewManager" flattened_view="false" show_ignored="false" />
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
@@ -122,10 +291,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DsReader.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="FloorRender.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/FloorRender.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="66" column="18" selection-start="2754" selection-end="2754" vertical-scroll-proportion="1.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DsInfo.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="51" column="22" selection-start="1823" selection-end="1823" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DsReader.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsReader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="368" column="43" selection-start="13605" selection-end="13624" vertical-scroll-proportion="0.3523316">
+            <state line="46" column="21" selection-start="1525" selection-end="1525" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -151,22 +340,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/SCROLL_S.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/GC_ENUM.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/GAMMA_S.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/CONFIG_S.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/WIN_PREVIEW_S.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/BUT_STATE_E.java" />
         <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/BUTTON_S.java" />
         <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/BLK_TYP_E.java" />
         <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/BUT_TYP_E.java" />
         <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/model/WIN_ELEMENT_S.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsLayerInfo.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/SimpleReader.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/ObjectInfo.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java" />
         <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/GroupInfo.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/PathInfo.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/ObjectInfo.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/FileHeader.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/BlockHeader.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/SubBlockHeader.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsLayerInfo.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/Extract.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/SimpleReader.java" />
         <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsReader.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/FloorRender.java" />
       </list>
     </option>
   </component>
@@ -207,8 +396,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -237,75 +424,21 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dttool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dttool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mitallast" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dttool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dttool" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mitallast" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ds1" />
+              <option name="myItemId" value="output" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="options.lastSelected" value="preferences.pluginManager" />
+    <property name="options.lastSelected" value="appearance" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="$USER_HOME$/Downloads/win_ds1edit_20111030_src/ds1misc.c" />
     <property name="MemberChooser.copyJavadoc" value="false" />
@@ -323,7 +456,7 @@
       <recent name="$PROJECT_DIR$/palette" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.DsReader">
+  <component name="RunManager" selected="Application.FloorRender">
     <configuration default="false" name="Extract" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.mitallast.dt1.Extract" />
       <option name="VM_PARAMETERS" />
@@ -348,7 +481,7 @@
     </configuration>
     <configuration default="false" name="DsReader" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.mitallast.ds1.DsReader" />
-      <option name="VM_PARAMETERS" value="-Xmx256m -Xmx512m" />
+      <option name="VM_PARAMETERS" value="-Xmx4096m -Xmx4096m" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -370,17 +503,39 @@
     </configuration>
     <configuration default="false" name="SimpleReader" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.mitallast.ds1.SimpleReader" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="VM_PARAMETERS" value="-Xmx4096m -Xmx4096m" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="dttool" />
       <envs />
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="FloorRender" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.mitallast.ds1.FloorRender" />
+      <option name="VM_PARAMETERS" value="-Xmx4096m -Xmx4096m" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="dttool" />
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -472,16 +627,18 @@
       <patterns />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Application.Extract" />
       <item index="1" class="java.lang.String" itemvalue="Application.DsReader" />
       <item index="2" class="java.lang.String" itemvalue="Application.SimpleReader" />
+      <item index="3" class="java.lang.String" itemvalue="Application.FloorRender" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Application.DsReader" />
-        <item index="1" class="java.lang.String" itemvalue="Application.SimpleReader" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Application.FloorRender" />
+        <item index="1" class="java.lang.String" itemvalue="Application.DsReader" />
         <item index="2" class="java.lang.String" itemvalue="Application.Extract" />
+        <item index="3" class="java.lang.String" itemvalue="Application.SimpleReader" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -518,9 +675,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32905984" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -533,8 +690,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24878444" sideWeight="0.21937323" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21799028" sideWeight="0.8831909" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.116809115" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21799028" sideWeight="0.27285713" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7271429" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37891737" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -602,103 +759,99 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/output/1236.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/948.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/660.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/pallete/PaletteReader.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/FloorRender.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="162" selection-end="162" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="42" column="35" selection-start="2037" selection-end="2037" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/468.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/372.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/276.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/Extract.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="4" selection-start="2605" selection-end="2605" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/nio/Buffer.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="0" selection-start="1854" selection-end="1854" vertical-scroll-proportion="0.8064516">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/nio/ByteBuffer.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="22" selection-start="160" selection-end="160" vertical-scroll-proportion="0.13761468">
+        <state line="54" column="33" selection-start="1933" selection-end="1933" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsLayerInfo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="8" selection-start="127" selection-end="127" vertical-scroll-proportion="0.25862068">
+        <state line="11" column="18" selection-start="187" selection-end="187" vertical-scroll-proportion="0.33139536">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/ObjectInfo.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/dt1/Extract.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="18" selection-start="1225" selection-end="1225" vertical-scroll-proportion="0.87323946">
+        <state line="66" column="24" selection-start="2965" selection-end="2965" vertical-scroll-proportion="-1.6759777">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/SimpleReader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="18" selection-start="3213" selection-end="3213" vertical-scroll-proportion="0.14069591">
+        <state line="42" column="12" selection-start="1279" selection-end="1279" vertical-scroll-proportion="0.84569734">
           <folding>
-            <element signature="class#Object#0;class#SimpleReader#0" expanded="false" />
             <element signature="class#5824:6654" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/GroupInfo.java">
+    <entry file="file://$PROJECT_DIR$/output/0/372.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/0/468.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/0/1140.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/0/660.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/0/756.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/1/756.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/1/1140.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsReader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="18" selection-start="162" selection-end="162" vertical-scroll-proportion="0.22255193">
-          <folding />
+        <state line="46" column="21" selection-start="1525" selection-end="1525" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsInfo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="22" selection-start="2130" selection-end="2130" vertical-scroll-proportion="0.5716753">
+        <state line="51" column="22" selection-start="1823" selection-end="1823" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/DsReader.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/org/mitallast/ds1/FloorRender.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="368" column="43" selection-start="13605" selection-end="13624" vertical-scroll-proportion="0.3523316">
+        <state line="66" column="18" selection-start="2754" selection-end="2754" vertical-scroll-proportion="1.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
