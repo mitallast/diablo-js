@@ -44,10 +44,32 @@ public class Extract {
                 BlockHeader blockHeader = reader.getBlockHeader(block_ptr);
                 blockHeader.subBlockHeaderList = new ArrayList<SubBlockHeader>();
                 fileHeader.blockHeaderList.add(blockHeader);
-                System.out.println(blockHeader);
+                //System.out.println(blockHeader);
                 // load sub block
                 int sub_ptr=blockHeader.getData_pointer();
-                BufferedImage bufferedImage = new BufferedImage(blockHeader.getSize_x(), blockHeader.getSize_y(), BufferedImage.TYPE_INT_ARGB);
+                int orientation = blockHeader.orientation;
+                int w = blockHeader.size_x;
+                int h = blockHeader.size_y;
+                int y_add = 96;
+                if ((orientation == 0) || (orientation == 15)) // floor or roof
+                {
+                    if (blockHeader.size_y!=0)
+                    {
+                        blockHeader.size_y = - 80;
+                        h = 80;
+                        y_add = 0;
+                    }
+                }
+                else if (orientation < 15) // upper wall, shadow, special
+                {
+                    if (blockHeader.size_y!=0)
+                    {
+                        blockHeader.size_y += 32;
+                        h -= 32;
+                        y_add = h;
+                    }
+                }
+                BufferedImage bufferedImage = new BufferedImage(w,h, BufferedImage.TYPE_INT_ARGB);
                 for(int sub=0;sub<blockHeader.getSub_block();sub++){
                     SubBlockHeader subBlockHeader = reader.getSubBlockHeader(sub_ptr);
                     blockHeader.subBlockHeaderList.add(subBlockHeader);
@@ -55,22 +77,28 @@ public class Extract {
                     // load tiles
                     int tile_ptr = blockHeader.getData_pointer()+subBlockHeader.getData_offset();
                     byte[] tile = reader.getTile(tile_ptr, subBlockHeader.getSub_length());
+
+
+
                     if(subBlockHeader.getTile_format()==1){
                         draw_sub_tile_isometric(
                                 bufferedImage,
                                 subBlockHeader.getX_pos(),
-                                subBlockHeader.getY_pos(),
+                                y_add + subBlockHeader.getY_pos(),
                                 tile,
                                 palette
                         );
                     }else{
-                        draw_sub_tile_normal(
-                            bufferedImage,
-                            subBlockHeader.getX_pos(),
-                            subBlockHeader.getY_pos(),
-                            tile,
-                            palette
-                        );
+//                        if(block_ptr==2772){
+//                            System.out.println(subBlockHeader.getX_pos()+":"+subBlockHeader.getY_pos());
+                            draw_sub_tile_normal(
+                                    bufferedImage,
+                                    subBlockHeader.getX_pos(),
+                                    y_add + subBlockHeader.getY_pos(),
+                                    tile,
+                                    palette
+                            );
+//                        }
                     }
                     sub_ptr+=SubBlockHeader.BYTE_COUNT;
                 }
@@ -161,20 +189,10 @@ public class Extract {
 
     public static void draw_sub_tile_normal (BufferedImage dst, int x0, int y0, byte[] data, int[] palette)
     {
-//        int ptr=0;
-//        for(int x=0;x<32;x++){
-//            for(int y=0;y<32;y++){
-//                int colorIndex = data[ptr] & 0xFF;
-//                int color = palette[colorIndex];
-//                dst.setRGB(x0 + x, y0 + y, color);
-//                ptr++;
-//            }
-//        }
-        int ptr = 0, b1, b2;
-        int   x=0, y=0;
+        int ptr = 0;
+        int  x=0, y=0;
+        byte b1, b2;
         int length = data.length;
-
-
         // draw
         while (length > 0)
         {
@@ -190,7 +208,9 @@ public class Extract {
                 {
                     int colorIndex = data[ptr] & 0xFF;
                     int color = palette[colorIndex];
-                    dst.setRGB(x0 + x, y0 + y, color);
+                    try{
+                        dst.setRGB(x0 + x, y0 + y, color);
+                    }catch (ArrayIndexOutOfBoundsException e){}
                     ptr++;
                     x++;
                     b2--;

@@ -24,30 +24,87 @@ var barrelSprite=loadImage("sprite/barrel64.png");
 var coinSprite=loadImage("sprite/coins10.png");
 var potionSprite=loadImage("sprite/potions.png");
 
-var tiles=[756,1140,660,372,1908,];
-var tileMap={};
-for(var i in tiles){
-    tileMap[tiles[i]]=loadImage("dttool/output/1/"+tiles[i]+".png");
+var floorTiles=[756,1140,660,372,1908,];
+var floorTileMap={};
+for(var i in floorTiles){
+    floorTileMap[floorTiles[i]]=loadImage("dttool/output/1/"+floorTiles[i]+".png");
 }
 
+var wallTiles=[948,468,2004,1140,372,2100,1524,1428,1044];
+var wallTileMap={};
+for(var i in wallTiles){
+    wallTileMap[wallTiles[i]]=loadImage("dttool/output/0/"+wallTiles[i]+".png");
+}
 
 var tw=160, th=tw/2, s=tw*0.705, a=Math.PI/4, visible=7;
 var asin=acos=Math.sin(a);
 
 var floorMap=[
-[ 756,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 756,],
-[   0,   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,   0,   0,   0,],
-[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,   0,   0,],
-[   0, 756, 756, 756, 756, 756, 756, 756,1140, 660, 756,1908, 756,   0,   0,],
-[   0, 756, 756, 756, 756, 756, 756, 756, 756, 660, 756, 756, 756,   0,   0,],
-[   0, 756, 756, 756, 756, 756, 756, 756, 756, 372, 756, 756, 756,   0,   0,],
-[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,   0,   0,],
-[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,   0,   0,],
-[   0,   0, 756,1140, 756, 756, 756, 756, 756, 756, 756, 756,   0,   0,   0,],
-[   0,   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,   0,   0,   0,],
-[   0,   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,   0,   0,   0,],
+[ 756,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,],
+[   0,   0, 756, 756, 756, 756, 756, 756,   0,   0,   0,],
+[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,],
+[   0, 756, 756, 756, 756, 756, 756, 756,1140, 756, 756,],
+[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,],
+[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,],
+[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,],
+[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,],
+[   0, 756, 756,1140, 756, 756, 756, 756, 756, 756, 756,],
+[   0, 756, 756, 660, 660, 372, 756, 756, 756, 756, 756,],
+[   0, 756, 756, 756, 756, 756, 756, 756, 756, 756, 756,],
+[   0, 756, 756,1908, 756, 756, 756, 756, 756, 756, 756,],
+[   0,   0, 756, 756, 756, 756, 756, 756,   0,   0,   0,],
+[   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,],
+[ 756,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,],
+];
 
-,];
+var wallMap=[
+[   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,],
+[   0,   0, 948, 372, 372, 372, 948, 372,2100,   0,   0,],
+[   0, 948,1140,   0,   0,   0, 468,   0,2004, 372, 948,],
+[   0, 468,   0,   0,   0,   0,1524,   0,   0,   0, 468,],
+[   0, 468,   0,   0,   0,   0,1428,   0,   0,   0, 468,],
+[   0, 468,   0,   0,   0,   0, 468,   0,   0,   0, 468,],
+[   0, 468,   0,   0,   0,   0, 468,   0,   0,   0,1524,],
+[   0, 948, 372, 372, 372, 372,1140,   0,   0,   0,1428,],
+[   0, 468,   0,   0,   0,   0,   0,   0,   0,   0, 468,],
+[   0, 468,   0,   0,   0,   0,   0,   0,   0,   0, 468,],
+[   0, 468,   0,   0,   0,   0,   0,   0,   0,   0, 468,],
+[   0, 468,   0,   0,   0,   0,   0,   0,   0,   0, 468,],
+[   0,2004,2100,   0,   0,   0,   0,   0, 948, 372,2004,],
+[   0,   0,2004, 372, 372, 372, 372, 372,1140,   0,   0,],
+[   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,],
+];
+
+var wallHeader={
+276:{orientation:8, main_index: 5, sub_index: 2, direction:1},
+372:{orientation:2, main_index: 5, sub_index: 0, direction:2},
+468:{orientation:1, main_index: 5, sub_index: 0, direction:1},
+564:{orientation:2, main_index: 5, sub_index: 0, direction:2},
+660:{orientation:2, main_index: 5, sub_index: 0, direction:2},
+756:{orientation:1, main_index: 5, sub_index: 0, direction:1},
+852:{orientation:1, main_index: 5, sub_index: 0, direction:1},
+948:{orientation:3, main_index: 5, sub_index: 0, direction:3},
+1044:{orientation:4, main_index: 5, sub_index: 0, direction:3},
+1140:{orientation:7, main_index: 5, sub_index: 0, direction:4},
+1236:{orientation:9, main_index: 5, sub_index: 0, direction:2},
+1332:{orientation:9, main_index: 5, sub_index: 1, direction:2},
+1428:{orientation:8, main_index: 5, sub_index: 0, direction:1},
+1524:{orientation:8, main_index: 5, sub_index: 1, direction:1},
+1620:{orientation:9, main_index: 5, sub_index: 0, direction:2},
+1716:{orientation:9, main_index: 5, sub_index: 1, direction:2},
+1812:{orientation:8, main_index: 5, sub_index: 1, direction:1},
+1908:{orientation:8, main_index: 5, sub_index: 0, direction:1},
+2004:{orientation:6, main_index: 5, sub_index: 0, direction:2},
+2100:{orientation:5, main_index: 5, sub_index: 0, direction:1},
+2196:{orientation:6, main_index: 5, sub_index: 0, direction:2},
+2292:{orientation:5, main_index: 5, sub_index: 0, direction:1},
+2388:{orientation:2, main_index: 5, sub_index: 0, direction:2},
+2484:{orientation:1, main_index: 5, sub_index: 0, direction:1},
+2580:{orientation:3, main_index: 5, sub_index: 0, direction:3},
+2676:{orientation:4, main_index: 5, sub_index: 0, direction:3},
+2772:{orientation:12, main_index: 5, sub_index: 0, direction:3},
+}
+
 function isWayFloor(x,y) {
     return floorMap[y] ? floorMap[y][x] !== " " : false;
 }
@@ -58,7 +115,7 @@ function getFloorTile(x, y) {
     if(!floorMap[y]) return null;
     if(!floorMap[y][x]) return null;
     var f = floorMap[y][x];
-    return tileMap[f];
+    return floorTileMap[f];
 }
 
 var monsterMap={
@@ -95,12 +152,20 @@ setInterval(function(){
 },2000);
 
 // aggresive mobs
-var monsters=[],deathmobs=[],barrels=[],coins=[],potions=[];
-//for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SK'));
-//for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'FS'));
-//for(var i=0;i<10;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SI'));
-//for(var i=0;i<33;i++) barrels.push(new Barrel(randomx(),randomy()));
-//for(var i=0;i<33;i++) potions.push(new PotionHealth(randomx(), randomy()));
+var monsters=[],deathmobs=[],barrels=[],coins=[],potions=[],walls=[];
+for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SK'));
+for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'FS'));
+for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SI'));
+for(var i=0;i<2;i++) barrels.push(new Barrel(randomx(),randomy()));
+for(var i=0;i<2;i++) potions.push(new PotionHealth(randomx(), randomy()));
+for(var y in wallMap){
+    for(var x in wallMap[y]){
+        var index = wallMap[y][x];
+        if(index>0){
+            walls.push(new Wall(index,x*s-s/2,y*s-s/2));
+        }
+    }
+}
 
 
 setInterval(function() { // random step for mobs, attack hero
@@ -203,7 +268,7 @@ function renderHeroBelt(){
 
 function loadZb(order,click){
     var tmp_zb=[], zb=[];
-    var all=[monsters,potions,barrels,click?[]:[hero]];
+    var all=[monsters,potions,barrels,click?[]:[hero],click?[]:walls];
     for(var t in all) 
         for(var m in all[t]) 
             if(all[t][m].isAboveHero()) 
@@ -293,7 +358,7 @@ function renderFloor() {
             if(tile){
                 var tx=( x - y ) * th,
                     ty=( x + y ) * th/2;
-                floor.drawImage(tile, tx, ty, tw+1, th+1);                
+                floor.drawImage(tile, tx, ty, tile.width+0.707, tile.height+0.707);
             }
         }
     }
@@ -316,6 +381,39 @@ function Shape(sprite,x,y){
         var maxlen=tw*visible/2;
         return (Math.abs(this.x-hero.x)<=maxlen) && (Math.abs(this.y-hero.y)<=maxlen);
     };
+}
+
+function Wall(index,x,y){
+    Shape.call(this,wallTileMap[index],x,y);
+    this.header=wallHeader[index];
+    this.isAboveHero=function(){return true;}
+    console.log(this.header);
+    this.offset_x+=10;
+    this.offset_y+=110;
+    switch(this.header.orientation){
+        case 2:
+            this.offset_x+=16;
+            break;
+        case 6:
+            this.offset_x+=16;
+            break;
+        case 5:
+            this.offset_x-=16;
+            break;
+        case 3:
+            for(var inx in wallHeader){
+                var h = wallHeader[inx];
+                if(h.orientation==4 && h.main_index==this.header.main_index && h.sub_index==this.header.sub_index){
+                    walls.push(new Wall(inx, x, y))
+                    break;
+                }
+            }
+            this.offset_x+=16;
+            break;
+        case 4:
+            this.offset_x-=16;
+            break;
+    }
 }
 
 function DeathMob(mob){

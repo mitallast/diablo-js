@@ -251,6 +251,15 @@ public class BlockHeader {
         this.zeros3 = zeros3;
     }
 
+    public String toJson() {
+        return  offset+":{" +
+                "orientation:" + orientation +
+                ", main_index: "+main_index+
+                ", sub_index: "+sub_index+
+                ", direction:" + direction +
+                '}';
+    }
+
     @Override
     public String toString() {
         return "BlockHeader{" +

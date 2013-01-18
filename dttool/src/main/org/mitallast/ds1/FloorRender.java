@@ -35,6 +35,9 @@ public class FloorRender {
                 new RandomAccessFile(fileName, "r"),
                 new RandomAccessFile("palette/ACT1/pal.dat", "r")
         );
+        for(BlockHeader blockHeader: fileHeader.blockHeaderList){
+            System.out.println(blockHeader.toJson()+",");
+        }
         int[][] floor;
         switch (type){
             case 0:
@@ -56,7 +59,7 @@ public class FloorRender {
     }
 
     public static int[][] searchWall(DsLayerInfo[][] layer, FileHeader fileHeader){
-        int[][] floor = new int[layer.length][layer[0].length];
+        int[][] floor = new int[layer[0].length][layer.length];
         for(int x=0;x<layer.length;x++){
             for (int y=0;y<layer[x].length;y++){
                 DsLayerInfo layerInfo = layer[x][y];
@@ -64,15 +67,18 @@ public class FloorRender {
                 if (layerInfo.prop1 == 0) continue;
                 main_index  = ((layerInfo.prop3 >> 4)&0x0F + ((layerInfo.prop4 & 0x03) << 4));
                 sub_index   = layerInfo.prop2;
-                //System.out.println("Search "+layerInfo.orientation+" "+main_index+" "+sub_index);
+//                if(layerInfo.orientation==3){
+//                    layerInfo.orientation=4;
+//                }
+//                System.out.println("Search "+layerInfo.orientation+" "+main_index+" "+sub_index);
                 for(BlockHeader blockHeader: fileHeader.blockHeaderList){
 //                    System.out.println("Test "+blockHeader.orientation+" "+blockHeader.main_index+" "+blockHeader.sub_index);
                     if ( (blockHeader.orientation == layerInfo.orientation) &&
                             (blockHeader.main_index  == main_index) &&
                             (blockHeader.sub_index   == sub_index)
                             ){
-//                        System.out.println("Found "+blockHeader);
-                        floor[x][y]=blockHeader.offset;
+//                        System.out.println("Found "+blockHeader.offset);
+                        floor[y][x]=blockHeader.offset;
                         break;
                     }
                 }
@@ -81,7 +87,7 @@ public class FloorRender {
         return floor;
     }
     public static int[][] searchFloor(DsLayerInfo[][] layer, FileHeader fileHeader){
-        int[][] floor = new int[layer.length][layer[0].length];
+        int[][] floor = new int[layer[0].length][layer.length];
         for(int x=0;x<layer.length;x++){
             for (int y=0;y<layer[x].length;y++){
                 DsLayerInfo layerInfo = layer[x][y];
@@ -97,7 +103,7 @@ public class FloorRender {
                             (blockHeader.sub_index   == sub_index)
                             ){
 //                        System.out.println("Found "+blockHeader);
-                        floor[x][y]=blockHeader.offset;
+                        floor[y][x]=blockHeader.offset;
                         break;
                     }
                 }

@@ -30,8 +30,8 @@ public class SubBlockHeader {
     private int data_offset;
 
     public void fromByteBuffer(ByteBuffer buffer){
-        x_pos = buffer.getShort() & 0xFF;
-        y_pos = buffer.getShort() & 0xFF;
+        x_pos = buffer.getShort();
+        y_pos = buffer.getShort();
         zeros1 = buffer.getShort();
         grid_x = buffer.get();
         grid_y = buffer.get();
