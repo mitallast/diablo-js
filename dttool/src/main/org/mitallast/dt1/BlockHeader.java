@@ -252,12 +252,23 @@ public class BlockHeader {
     }
 
     public String toJson() {
-        return  offset+":{" +
-                "orientation:" + orientation +
-                ", main_index: "+main_index+
-                ", sub_index: "+sub_index+
-                ", direction:" + direction +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        builder.append(offset).append(":{")
+                .append("orientation:").append(orientation)
+                .append(", main_index:").append(main_index)
+                .append(", sub_index:").append(sub_index)
+                .append(", direction:").append(direction);
+        builder.append(", walk:[");
+        for(byte flags: floor_flags){
+            if((flags & 0x01) == 0){
+                builder.append("0,");
+            }else{
+                builder.append("1,");
+            }
+        }
+        builder.append("]");
+        builder.append('}');
+        return builder.toString();
     }
 
     @Override

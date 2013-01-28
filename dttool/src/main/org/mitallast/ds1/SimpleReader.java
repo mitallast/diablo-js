@@ -15,7 +15,7 @@ public class SimpleReader {
 
     public static void main(String... args){
         try {
-            new SimpleReader(new RandomAccessFile("tiles/ACT1/TOWN/townE1.ds1", "r"));
+            new SimpleReader(new RandomAccessFile("tiles/ACT1/BARRACKS/barE.ds1", "r"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +55,7 @@ public class SimpleReader {
             NumFiles = readInt();
             //read the file(s) path of .dt1 and tg1 used
             System.out.println("NumFiles "+NumFiles);
-            for (int i = 0; i < 10; i++){
+            for (int i = 0; i < 3; i++){
                 StringBuffer stringBuffer = new StringBuffer();
                 int symbol;
                 do{

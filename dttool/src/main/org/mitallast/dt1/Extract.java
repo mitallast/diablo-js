@@ -18,7 +18,7 @@ public class Extract {
         String[] fileNames = new String[]{
             "tiles/ACT1/BARRACKS/basewall.dt1",
             "tiles/ACT1/BARRACKS/floor.dt1",
-//            "tiles/ACT1/BARRACKS/objects.dt1",
+            "tiles/ACT1/BARRACKS/objects.dt1",
         };
         int i=0;
         for(String fileName: fileNames){
@@ -69,6 +69,8 @@ public class Extract {
                         y_add = h;
                     }
                 }
+                if(w<=0 || h<=0) continue;
+                System.out.println("create img "+w+" "+h+" ("+blockHeader.size_x+" "+blockHeader.size_y+")");
                 BufferedImage bufferedImage = new BufferedImage(w,h, BufferedImage.TYPE_INT_ARGB);
                 for(int sub=0;sub<blockHeader.getSub_block();sub++){
                     SubBlockHeader subBlockHeader = reader.getSubBlockHeader(sub_ptr);

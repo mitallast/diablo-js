@@ -14,13 +14,17 @@ public class DsReader {
 
     public static void main(String... args) throws IOException {
         DsInfo dsInfo = read(new RandomAccessFile("tiles/ACT1/BARRACKS/barE.ds1", "r"));
-        for(DsLayerInfo[][] dsLayerInfo: dsInfo.wall_buff){
-            for (DsLayerInfo[] layerInfoList: dsLayerInfo){
-                for(DsLayerInfo layerInfo: layerInfoList){
-                    System.out.println(layerInfo);
-                }
-            }
-            break;
+//        for(DsLayerInfo[][] dsLayerInfo: dsInfo.wall_buff){
+//            for (DsLayerInfo[] layerInfoList: dsLayerInfo){
+//                for(DsLayerInfo layerInfo: layerInfoList){
+//                    System.out.println(layerInfo);
+//                }
+//            }
+//            break;
+//        }
+        System.out.println(dsInfo.obj_num);
+        for(ObjectInfo objectInfo: dsInfo.obj){
+            System.out.println(objectInfo);
         }
     }
 
@@ -289,7 +293,7 @@ public class DsReader {
             }
 
             int n = info.group_num = buffer.getInt();
-            //System.out.println("Groups: "+n);
+            System.out.println("Groups: "+n);
 
             // malloc
             info.group = new GroupInfo[info.group_num];
