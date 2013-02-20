@@ -256,11 +256,11 @@ setInterval(function(){
 
 // aggresive mobs
 var monsters=[],deathmobs=[],barrels=[],coins=[],potions=[],walls=[];
-//for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SK'));
-//for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'FS'));
-//for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SI'));
+for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SK'));
+for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'FS'));
+for(var i=0;i<2;i++) monsters.push(new AgressiveMob(randomx(),randomy(), 'SI'));
 //for(var i=0;i<2;i++) barrels.push(new Barrel(randomx(),randomy()));
-//for(var i=0;i<2;i++) potions.push(new PotionHealth(randomx(), randomy()));
+for(var i=0;i<2;i++) potions.push(new PotionHealth(randomx(), randomy()));
 
 for(var y in level.wall.map){
     for(var x in level.wall.map[y]){
@@ -630,7 +630,7 @@ function Mob(x,y,name){
     this.st=8;
     Shape.call(this, this.currentState, x, y);
     this.rotate = function(sx,sy){
-        var l=this.run.angles;
+        var l=this.currentState.angles;
         this.angle=Math.round((Math.atan2(sy, sx)/Math.PI+2.75)*l/2+l/2)%l
     }
     this.rotateTo = function(point){
@@ -645,7 +645,7 @@ function Mob(x,y,name){
     this.nextStep=function(){
         var dx=(this.to_x - this.x),
             dy=(this.to_y - this.y);
-        if((Math.sqrt((dx*dx)+(dy*dy)))>16){ // run
+        if((Math.sqrt((dx*dx)+(dy*dy)))>this.st){ // run
             var tx=0;ty=0;
             for(var st=0;st<this.st;st+=0.01){
                 var sx=st * dx / Math.sqrt((dx*dx) + (dy*dy));
@@ -653,11 +653,11 @@ function Mob(x,y,name){
                 if(isWayWall(this.x+sx,this.y+sy)){tx=sx;ty=sy;}
                 else break;
             }
-            if(Math.sqrt((tx*tx)+(ty*ty))>15){
+            this.rotate(tx, ty);
+            if(Math.sqrt((tx*tx)+(ty*ty))>=this.st/2){
                 this.x+=tx;
                 this.y+=ty;
                 this.setState(this.run);
-                this.rotate(tx,ty);
             }
             else{ this.setState(this.stay); this.x+=tx;this.y+=ty;this.to_x=this.x;this.to_y=this.y;}
         } else{ this.setState(this.stay); this.to_x=this.x;this.to_y=this.y;}
@@ -665,7 +665,7 @@ function Mob(x,y,name){
         this.sprite=this.currentState;
     }
     this.origin_health=this.health=1000;
-    this.resistance=10 // damage resistance, less than 1000
+    this.resistance=10; // damage resistance, less than 1000
     this.use = function(mob){
         if(mob.doAttack) mob.doAttack(this);
     };
