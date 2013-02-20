@@ -7,11 +7,30 @@ html, body, canvas{
 	padding: 0;
 	background: black;
 	display:block;
+	color:rgb(169, 152, 119);
+	font-family: Verdana, sans-serif;
+	font-size: 13px;
+}
+canvas{
+	-webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none
+}
+a{
+	color: #d96500;
+}
+.page{
+	margin: 0 auto;
+	width: 980px;
 }
 </style>
 </head>
 <body>
-<canvas id="floor" width="980" height="661"></canvas>
+	<div class="page">
+		<canvas id="floor" width="980" height="661"></canvas>
+		<p>Isometric minimal-code style game at html5 canvas and javascript.</p>
+		<p>See more at <a href="https://github.com/mitallast/diablo-js">github</a></p>
+	</div>
 <script>/*window.onerror=alert*/</script>
 <script src="diablo.js"></script>
 </body>
