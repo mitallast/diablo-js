@@ -303,8 +303,8 @@ setInterval(function() { // random step for mobs, attack hero
 }, 200);
 
 floor.canvas.onclick=function(e) { 
-    var mx=e.offsetX - floor.w/2;
-    var my=e.offsetY - floor.h/2;
+    var mx=(e.offsetX==undefined?e.layerX:e.offsetX) - floor.w/2;
+    var my=(e.offsetY==undefined?e.layerY:e.offsetY) - floor.h/2;
     var isCanClick=Math.abs(mx) < 100 && Math.abs(my) < 100;
     my *= 2; //unscale
     floor.click_x=hero.x + mx * Math.cos(-a) - my * Math.sin(-a);
