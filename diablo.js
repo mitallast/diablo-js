@@ -5,7 +5,12 @@ function loadImage(url,angles,steps,offsetX){
     var i=new Image();
     i.onload=function(){
         imageCount--;
-        i.offsetX=offsetX?((i.height/angles)>>2):0;
+        if(i.offsetX==undefined){ // for FF
+            i.layerX=offsetX?((i.height/angles)>>2):0;
+        }
+        else{
+            i.offsetX=offsetX?((i.height/angles)>>2):0;
+        }
     }
     i.src=url;
     imageCount++;
@@ -148,8 +153,14 @@ for(var y in floorMap) // pre fetch house;
             houses.push(new House((parseInt(x)+0.5)*s,(parseInt(y)+0.5)*s));
 
 floor.canvas.onclick=function(e) { 
-    var mx=e.offsetX - floor.w/2;
-    var my=e.offsetY - floor.h/2;
+    if(e.offsetX==undefined){ // for FF
+        var mx=e.layerX - floor.w/2;
+        var my=e.layerY - floor.h/2;        
+    }
+    else{
+        var mx=e.offsetX - floor.w/2;
+        var my=e.offsetY - floor.h/2;
+    }
     var isCanClick=Math.abs(mx) < 100 && Math.abs(my) < 100;
     my *= 2; //unscale
     floor.click_x=hero.x + mx * Math.cos(-a) - my * Math.sin(-a);
@@ -271,9 +282,16 @@ function renderObjects(){
         if(tile.steps && tile.angles){
             tw/=tile.steps;
             th/=tile.angles;
+            if(tile.offsetX==undefined){ // for FF
+            floor.drawImage(tile, 
+                tw*m.step, th*m.angle, tw, th,
+                Math.round(sx-tw/2-tile.layerX), Math.round(sy-th), tw, th);
+            }
+            else{
             floor.drawImage(tile, 
                 tw*m.step, th*m.angle, tw, th,
                 Math.round(sx-tw/2-tile.offsetX), Math.round(sy-th), tw, th);
+            }
         }else{
             floor.drawImage(tile, Math.round(sx-tile.width/2), Math.round(sy-tile.height));            
         }
