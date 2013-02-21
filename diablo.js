@@ -200,7 +200,7 @@ function isWayWall(x,y){
         iy = 4-Math.floor((y%s)/(s/5)),
         w_inx = iy*5+ix, h, idx;
     for(var l in level){
-        if(level[l].map[block_x] && (idx=level[l].map[block_y][block_x]) && (h=level[l].header[idx])){
+        if(level[l].map[block_y] && (idx=level[l].map[block_y][block_x]) && (h=level[l].header[idx])){
             if(h.walk[w_inx]==1) return false;
             else if(h.orientation==3){
                 for(var idx in level.wall.header){
