@@ -200,7 +200,7 @@ function isWayWall(x,y){
         iy = 4-Math.floor((y%s)/(s/5)),
         w_inx = iy*5+ix, h, idx;
     for(var l in level){
-        if(level[l].map[block_x] && (idx=level[l].map[block_y][block_x]) && (h=level[l].header[idx])){
+        if(level[l].map[block_y] && (idx=level[l].map[block_y][block_x]) && (h=level[l].header[idx])){
             if(h.walk[w_inx]==1) return false;
             else if(h.orientation==3){
                 for(var idx in level.wall.header){
@@ -303,8 +303,8 @@ setInterval(function() { // random step for mobs, attack hero
 }, 200);
 
 floor.canvas.onclick=function(e) { 
-    var mx=e.offsetX - floor.w/2;
-    var my=e.offsetY - floor.h/2;
+    var mx=(e.offsetX==undefined?e.layerX:e.offsetX) - floor.w/2;
+    var my=(e.offsetY==undefined?e.layerY:e.offsetY) - floor.h/2;
     var isCanClick=Math.abs(mx) < 100 && Math.abs(my) < 100;
     my *= 2; //unscale
     floor.click_x=hero.x + mx * Math.cos(-a) - my * Math.sin(-a);
