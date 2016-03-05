@@ -34,3 +34,4 @@ https://github.com/mitallast/diablo-js/blob/master/monsters/rename.sh
 
 More information you can find at original research from blizzhackers:
 http://www.blizzhackers.cc/viewtopic.php?f=182&t=370174&start=0
+
