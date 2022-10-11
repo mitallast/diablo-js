@@ -695,41 +695,14 @@
             }
         }
     };
-    for (var l in level) {
+    
         level[l].tiles = {};
-        'for ( var i in level[l].header)';
             if (!level[l].tiles[i]) level[l].tiles[i] = loadImage(level[l].prefix + i + ".png");
-    }
+}
+    
+    
 
-    var floor = document.getElementById("floor").getContext("2d");
-    floor.w = floor.canvas.width;
-    floor.h = floor.canvas.height;
-    var tw = 160,
-        th = tw / 2,
-        s = tw * 0.705,
-        a = Math.PI / 4,
-        visible = 7,
-        asin = acos = Math.sin(a);
-
-    var barrelSprite = loadImage("sprite/barrel64.png");
-    var coinSprite = loadImage("sprite/coins10.png");
-    var potionSprite = loadImage("sprite/potions.png");
-
-    function isWayWall(x, y) {
-        var block_x = Math.floor(x / s),
-            block_y = Math.floor(y / s),
-            ix = Math.floor((x % s) / (s / 5)),
-            iy = 4 - Math.floor((y % s) / (s / 5)),
-            w_inx = iy * 5 + ix,
-            h, idx;
-        for (var l in level) {
-            if (level[l].map[block_y] && (idx = level[l].map[block_y][block_x]) && (h = level[l].header[idx])) {
-                if (h.walk[w_inx] == 1) return false;
-                else if (h.orientation == 3) {
-                    for (var idx in level.wall.header) {
-                        var tb = level.wall.header[idx];
-                        if (tb.main_index == h.main_index && tb.sub_index == h.sub_index && tb.orientation == 4 && h.walk[w_inx] == 1) {
-                            return false;
+   
                         }
                     }
                 }
